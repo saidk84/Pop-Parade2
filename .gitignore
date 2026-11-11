@@ -1,0 +1,10 @@
+# Android / Gradle build files
+.gradle/
+**/.gradle/
+**/build/
+android/local.properties
+*.iml
+.idea/
+# All other APK builds ignored; the V0.2 deliverable is committed intentionally
+*.apk
+!apk/PopParade-v0.2-debug.apk
