@@ -19,7 +19,7 @@ gradle -p android --no-daemon :app:bundleRelease
 Output `android/app/build/outputs/bundle/release/app-release.aab`. GitHub Actions also saves the unsigned AAB and R8 mapping output.
 
 ## Play upload signing
-**An unsigned AAB is not Play-uploadable.** The file under `aab/PopParade-v0.3-play-upload.aab` should be signed with a private, stable RSA-2048-or-stronger upload key. The JKS and passwords must never be put in this public repository. Preserve/back up the upload keystore for future releases.
+**The verified Play-upload bundle is `aab/PopParade-v0.3-play-upload.aab`.** It is signed with a new RSA 4096-bit upload key. Do NOT upload `aab/PopParade-v0.3-unsigned.aab`. The JKS and passwords must never be put in this public repository. Preserve/back up the upload keystore for future releases.
 
 ```bash
 jarsigner -keystore /private/path/upload-key.jks -sigalg SHA256withRSA -digestalg SHA-256 app-release.aab YOUR_ALIAS
@@ -30,3 +30,9 @@ A new Play-signed installation may not update the V0.2 debug-signed APK directly
 
 ## Review required for Google Play
 See `play-store/PLAY_CONSOLE_CHECKLIST.md`. Signed bundle compilation is only one step: complete Play App Signing, mixed child/teen Families target-audience declarations, privacy-policy hosting and contact, Data safety, content rating, accurate store assets, and device/pre-launch tests. Google Play approval is not guaranteed.
+
+## V0.3 signed bundle and private key backup
+- GitHub public signed AAB: `aab/PopParade-v0.3-play-upload.aab`.
+- Key certificate SHA-256: `E5:9B:00:D0:A9:4F:13:9C:EB:92:6F:56:AF:F7:E0:EB:81:BA:0D:B6:0A:60:47:ED:F8:16:9A:13:4F:09:62:56`.
+- Encrypted private key recovery in GitHub: `aab/PopParade-v0.3-upload-key-recovery.p7m`.
+- Private recovery PEM and upload JKS are provided only as a separate private backup download in the chat, **not** in GitHub. Preserve this backup offline for updates; see `play-store/UPLOAD_KEY_RECOVERY.md`.

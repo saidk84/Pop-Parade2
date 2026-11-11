@@ -8,7 +8,8 @@
 - [x] No native .so libraries, so no native 16KB page-size alignment to adjust in the present build.
 
 ## Play Console and developer review still required
-- [ ] Sign upload bundle with an RSA 2048+ key kept off GitHub; configure Play App Signing, preserve the private upload keystore, verify certificate.
+- [x] V0.3 Play-upload AAB generated and signature verified using an RSA 4096-bit upload key; private JKS is not published in Git.
+- [ ] Preserve the private signing backup supplied separately in the ChatGPT conversation and configure Play App Signing; register/confirm the upload certificate before submission. For future app updates, reuse the same upload key.
 - [ ] Ensure applicationId `com.popparade.app` is correct and versionCode 3 exceeds any already-published version.
 - [ ] Publish and verify the privacy URL `https://saidk84.github.io/Pop-Parade2/privacy.html`, and confirm the operator and contact mechanism are accurate.
 - [ ] Complete Data safety disclosures, content rating, target audience and app-content declarations accurately for the built binary.
