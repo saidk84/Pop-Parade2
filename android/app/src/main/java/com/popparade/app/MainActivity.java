@@ -3,11 +3,17 @@ package com.popparade.app;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -29,13 +35,29 @@ public final class MainActivity extends Activity {
     private WebView webView;
     private TextToSpeech tts;
     private boolean speechReady;
+    private OnBackInvokedCallback backCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTheme(false);
         FrameLayout layout = new FrameLayout(this);
-        layout.setFitsSystemWindows(true);
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(false);
+            layout.setOnApplyWindowInsetsListener((view, insets) -> {
+                Insets bars = insets.getInsets(WindowInsets.Type.systemBars()
+                        | WindowInsets.Type.displayCutout());
+                view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                return insets;
+            });
+        } else {
+            layout.setFitsSystemWindows(true);
+        }
+        if (Build.VERSION.SDK_INT >= 33) {
+            backCallback = this::handleBackNavigation;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, backCallback);
+        }
         webView = new WebView(this);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         webView.setBackgroundColor(Color.rgb(255, 245, 223));
@@ -97,11 +119,23 @@ public final class MainActivity extends Activity {
 
     private void updateTheme(boolean challenging) {
         final int color = Color.parseColor(challenging ? "#111426" : "#fff5df");
-        getWindow().setStatusBarColor(color);
-        getWindow().setNavigationBarColor(color);
         int flags = challenging ? 0 : View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-        getWindow().getDecorView().setSystemUiVisibility(flags);
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarContrastEnforced(false);
+            WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+                controller.setSystemBarsAppearance(challenging ? 0 : mask, mask);
+            }
+        } else {
+            getWindow().setStatusBarColor(color);
+            getWindow().setNavigationBarColor(color);
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
     }
 
     public final class DeviceBridge {
@@ -123,7 +157,11 @@ public final class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        // The HTML app uses screen transitions rather than browser history.
+        handleBackNavigation();
+    }
+
+    private void handleBackNavigation() {
+        // Screen transitions are internal; use Android 16 predictive-Back callback.
         final String backScript = "(function(){"
                 + "if(document.body.classList.contains('challenge-theme')){"
                 + "let x=!document.getElementById('chPlay').classList.contains('ch-hide')?'chExit':"
@@ -163,6 +201,10 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (Build.VERSION.SDK_INT >= 33 && backCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
+            backCallback = null;
+        }
         if (webView != null) {
             webView.removeJavascriptInterface("PopParadeAndroid");
             webView.destroy();

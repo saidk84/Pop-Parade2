@@ -1,37 +1,32 @@
-# Pop Parade for Android — V0.2
+# Pop Parade V0.3 — Android App Bundle (AAB) with R8
 
-This Android app packages the playable Pop Parade game as a self-contained, offline Android WebView app.
+Preserves 45 gentle kids' levels, Free Pop, and 100 timed teen/adult challenge levels.
 
-## Modes
+## Android and Google Play technical baseline
+- Application ID: `com.popparade.app`; versionName `0.3` / versionCode `3`; minSdk 24.
+- Compile/target Android 16 API level 36, required for current Play phone submissions.
+- R8 minify/obfuscation, shrinking and resource optimization enabled for release.
+- HTML/CSS/JS bundled offline; R8 optimizes native Java bytecode/resources, **not the JavaScript**.
+- No advertising, analytics, accounts, or Android INTERNET/location/microphone permissions.
+- In-game policy modal and public `privacy.html` for the Play Console privacy-policy URL.
+- Edge-to-edge/system Back handling for Android 16. No packaged native .so libraries.
 
-- **Play Parade** — the original 45 gentle kids' levels across 5 worlds.
-- **Free Pop** — relaxed balloon popping.
-- **Challenging Mode (13+)** — 100 progressively faster timed levels in 10 arenas, neon styling, combos, accuracy and local score saving.
+## Build the unsigned bundle
+JDK 17, Gradle 8.13, Android SDK 36 and build tools 36.0.0:
+```bash
+gradle -p android --no-daemon :app:bundleRelease
+```
+Output `android/app/build/outputs/bundle/release/app-release.aab`. GitHub Actions also saves the unsigned AAB and R8 mapping output.
 
-All progress is saved in the WebView's local storage on the current Android device. The native Android shell adds on-device text-to-speech where available, Android Back navigation, and light/dark system bar styling.
+## Play upload signing
+**An unsigned AAB is not Play-uploadable.** The file under `aab/PopParade-v0.3-play-upload.aab` should be signed with a private, stable RSA-2048-or-stronger upload key. The JKS and passwords must never be put in this public repository. Preserve/back up the upload keystore for future releases.
 
-## Build
-
-Requirements: Java 17, Android SDK 35 and Gradle 8.13 (or Android Studio with supported Android Gradle Plugin 8.13.2).
-
-```sh
-gradle -p android assembleDebug
+```bash
+jarsigner -keystore /private/path/upload-key.jks -sigalg SHA256withRSA -digestalg SHA-256 app-release.aab YOUR_ALIAS
+jarsigner -verify -verbose -certs app-release.aab
 ```
 
-The output is `android/app/build/outputs/apk/debug/app-debug.apk`.
+A new Play-signed installation may not update the V0.2 debug-signed APK directly; removing the debug app can erase locally saved progress.
 
-For GitHub builds, the repository's Actions workflow saves `apk/PopParade-v0.2-debug.apk` and an Actions artifact. This V0.2 APK is **debug-signed for personal testing and sideloading**, not a Google Play release. Release signing should use a securely stored key, not a keystore committed to a public repository. Future independently built debug APKs may use different keys and require uninstalling the old app before installing the next one (which can reset locally saved game progress).
-
-### App configuration
-
-- Package ID: `com.popparade.app`
-- Version name: `0.2`, version code: `2`
-- Minimum Android: 7.0 (API 24)
-- Target Android: API 35
-- No account, advertising SDK, analytics SDK, external CDN, or requested Android internet permission
-
-The game code is embedded as `android/app/src/main/assets/index.html`. The publicly hosted web game remains at the repository root as `index.html`. The native source is under `android/`.
-
-### Installing the test APK
-
-On the Android phone, download the `.apk`, open it, and approve the device's **Install unknown apps** prompt for the trusted app used to download it. Install and open **Pop Parade**. Only install an APK from the trusted repository linked by the project owner.
+## Review required for Google Play
+See `play-store/PLAY_CONSOLE_CHECKLIST.md`. Signed bundle compilation is only one step: complete Play App Signing, mixed child/teen Families target-audience declarations, privacy-policy hosting and contact, Data safety, content rating, accurate store assets, and device/pre-launch tests. Google Play approval is not guaranteed.

@@ -1,10 +1,16 @@
-# Android / Gradle build files
+# Build and local configuration
 .gradle/
 **/.gradle/
 **/build/
 android/local.properties
 *.iml
 .idea/
-# All other APK builds ignored; the V0.2 deliverable is committed intentionally
+*.jks
+*.keystore
+**/secrets.properties
+# Versioned built app files explicitly tracked under apk/ and aab/
 *.apk
 !apk/PopParade-v0.2-debug.apk
+*.aab
+!aab/PopParade-v0.3-unsigned.aab
+!aab/PopParade-v0.3-play-upload.aab
