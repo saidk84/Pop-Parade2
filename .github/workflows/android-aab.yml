@@ -24,10 +24,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
+      - name: Set up Android command-line tools
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
       - name: Install Android API 36
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Build optimized release app bundle with R8
         run: gradle -p android --no-daemon --stacktrace :app:bundleRelease
       - name: Validate Android App Bundle and R8 output
