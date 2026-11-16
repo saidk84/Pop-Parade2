@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff5df">
-<title>Pop Parade — Kids & Challenging Arcade</title>
+<title>Pop Parade — Kids, Challenge & Seniors</title>
 <style>
 :root{--ink:#35415c;--muted:#77819a;--pink:#ff8fb1;--yellow:#ffd76e;--blue:#83d5f4;--green:#9be3bd;--purple:#bba5f5;--cream:#fff8e9;--card:#fff;--shadow:0 9px 24px #52608018}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(145deg,#fff6e4,#f0f5ff);touch-action:manipulation}button{font:inherit;border:0;cursor:pointer;touch-action:manipulation;color:var(--ink)}button:focus-visible{outline:4px solid #536cba;outline-offset:3px}
@@ -36,14 +36,23 @@
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #edf0f5;font-weight:800}.toggle{background:#dfe5ee;border-radius:99px;padding:4px;width:58px;text-align:left}.toggle.on{background:#a9e7c1;text-align:right}.toggle span{display:inline-block;width:22px;height:22px;background:#fff;border-radius:50%}
 footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
 @media(min-width:620px){#app{padding:22px 24px 34px}.world-list{grid-template-columns:1fr 1fr}.level-grid{grid-template-columns:repeat(9,1fr)}}
+#app{padding-bottom:calc(28px + env(safe-area-inset-bottom, 0px))}
+#garden{position:relative;height:clamp(230px,46vh,400px);margin-top:14px;border:4px solid #fff;border-radius:25px;overflow:hidden;background:linear-gradient(#c9efff 0%,#ecfaff 58%,#c4edbb 58%,#a2daa3 100%)}
+.garden-sticker{position:absolute;left:calc((100% - 54px)*var(--x));top:calc((100% - 54px)*var(--y));width:54px;height:54px;padding:0;border-radius:50%;background:transparent;font-size:36px;touch-action:none;user-select:none;cursor:grab}
+.garden-sticker:active{cursor:grabbing}
+#gardenPicker button:disabled,#gardenClear:disabled{opacity:.45;cursor:default}
+@media(max-width:619px){
+ #app{padding-top:calc(16px + env(safe-area-inset-top, 0px))}
+ #playfield{height:clamp(170px,calc(100dvh - 215px - env(safe-area-inset-bottom, 0px)),460px);min-height:0}
+}
 </style>
 </head>
 <body>
 <div id="app">
  <div class="top"><div class="brand"><div class="logo">🎈</div>Pop Parade</div><div style="display:flex;gap:8px"><button class="iconbtn" id="soundBtn" aria-label="Toggle sound">🔊</button><button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙️</button></div></div>
  <div id="home" class="screen active">
-  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>A happy little balloon adventure. Find your color, pop the matching balloons, and collect stars!</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Play Parade</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>13+</small></button></div></div>
-  <div class="challenge-teaser">⚡ <b>New:</b> 100 levels of reflex challenges for teens and adults. Your kids’ parade stays just as gentle.</div>
+  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>A happy little balloon adventure. Find your color, pop the matching balloons, and collect stars!</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Play Parade</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>7+</small></button><button class="btn challenge-entry senior-entry" id="seniorBtn">👾 Seniors Mode <small>13+</small></button></div></div>
+  <div class="challenge-teaser">⚡ Play 300 levels in Challenging Mode or race faster creatures in Seniors Mode.</div>
   <div class="feature-row"><div class="feature"><span>🦋</span>Learn colors</div><div class="feature"><span>⭐</span>Earn stars</div><div class="feature"><span>🎁</span>Collect stickers</div></div>
   <div class="section-title"><h2>Your parade</h2><button class="pill" id="collectionBtn">🏅 Collection</button></div>
   <div class="panel" style="display:flex;align-items:center;gap:12px"><div style="font-size:36px">🏆</div><div style="flex:1"><b id="homeProgress">0 / 45 levels</b><div class="progress" style="margin:7px 0 0"><div id="homeBar" class="bar"></div></div></div><b id="homeStars">⭐ 0</b></div>
@@ -74,7 +83,14 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
  </div>
  <div id="collection" class="screen">
   <div class="section-title"><button class="pill" id="collectionBack">← Home</button><h2>Sticker Parade 🏅</h2></div>
-  <p style="text-align:center;color:var(--muted);font-weight:750">Every completed world brings a new friend!</p><div class="sticker-grid" id="stickerGrid"></div>
+  <p style="text-align:center;color:var(--muted);font-weight:750">Every completed world brings new stickers!</p><div class="sticker-grid" id="stickerGrid"></div><div class="btnrow"><button class="btn green" id="playgroundBtn">🌳 Sticker playground</button></div>
+ </div>
+ <div id="playground" class="screen">
+  <div class="section-title"><button class="pill" id="playgroundBack">← Collection</button><h2>Sticker playground</h2></div>
+  <p id="gardenHint"></p>
+  <div class="btnrow" id="gardenPicker"></div>
+  <div id="garden" aria-label="Sticker playground"></div>
+  <div class="btnrow"><button class="pill" id="gardenClear">Clear playground</button></div>
  </div>
  <div id="settings" class="screen">
   <div class="section-title"><button class="pill" id="settingsBack">← Home</button><h2>Grown-up corner</h2></div>
@@ -87,7 +103,7 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
   </div>
  </div>
  <div class="toast" id="toast"></div>
- <footer>Pop Parade · A cheerful color-popping adventure · Progress stays on this device</footer>
+ <footer>Pop Parade V0.4 · A cheerful color-popping adventure · Progress stays on this device</footer>
 </div>
 <script>
 (()=>{
@@ -108,16 +124,27 @@ const worlds=[
  {name:'Star Carnival',range:[37,45],emoji:'🎡',desc:'Finish the parade with a big sparkle!',bg:'#e9e4ff',sticker:'🦁'}
 ];
 const stickers=['🐝','🦋','🦄','🐸','🦁'];
-const defaults={done:{},best:{},stickers:[],sound:true,voice:true,hints:true};
+const defaults={done:{},best:{},stickers:[],garden:{},sound:true,voice:true,hints:true};
 let save;try{save={...defaults,...JSON.parse(localStorage.getItem('popParadeSave')||'{}')};}catch(e){save={...defaults};}
 let level=1,mode='levels',targetColor=colors[0],popped=0,misses=0,needed=5,spawnTimer=null,live=false,spawned=0,activeBalloons=[],audioCtx=null;
 const persist=()=>{try{localStorage.setItem('popParadeSave',JSON.stringify(save));}catch(e){};updateHome();};
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);if(id==='game')fitPhoneArena($('playfield'),48);}
+function fitPhoneArena(arena,reserve){
+ if(!arena.clientWidth)return;
+ const app=$('app');
+ const narrow=window.innerWidth<620;
+ const top=arena.getBoundingClientRect().top+window.scrollY;
+ const safeBottom=parseFloat(getComputedStyle(app).paddingBottom);
+ arena.style.height=narrow?Math.max(170,Math.min(460,window.innerHeight-top-safeBottom-reserve))+'px':'';
+}
+window.addEventListener('resize',()=>fitPhoneArena($('playfield'),48));
+document.addEventListener('parade-fit-arena',()=>fitPhoneArena($('chArena'),36));
+window.addEventListener('resize',()=>{const arena=$('chArena');if(arena)fitPhoneArena(arena,36)});
 function totalDone(){return Object.keys(save.done).filter(k=>save.done[k]>0).length}
 function totalStars(){return Object.values(save.done).reduce((a,b)=>a+(+b||0),0)}
 function updateHome(){$('homeProgress').textContent=`${totalDone()} / 45 levels`; $('homeStars').textContent=`⭐ ${totalStars()}`;$('homeBar').style.width=(totalDone()/45*100)+'%';$('soundBtn').textContent=save.sound?'🔊':'🔇';}
 function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1700)}
-function beep(freq=550,dur=.09){if(!save.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.06,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}}
+function beep(freq=550,dur=.09,delay=0,type="sine"){if(!save.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;o.type=type;const start=audioCtx.currentTime+delay;g.gain.setValueAtTime(.06,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);o.start(start);o.stop(start+dur);}catch(e){}}
 function speak(t){if(!save.voice)return;try{if(window.PopParadeAndroid){window.PopParadeAndroid.speak(t);return;}if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.rate=.86;u.pitch=1.15;u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
 function worldIndex(n){return Math.min(4,Math.floor((n-1)/9))}
 function buildWorlds(){$('worldList').innerHTML='';worlds.forEach((w,i)=>{let done=0;for(let n=w.range[0];n<=w.range[1];n++)if(save.done[n])done++;let b=document.createElement('button');b.className='world';b.innerHTML=`<div class="world-art" style="background:${w.bg}">${w.emoji}</div><div class="world-info"><b>${w.name}</b><small>${w.desc}</small><small>${w.range[0]}–${w.range[1]} · ${done}/9 complete</small></div><div class="world-progress">${done===9?'🏆':'➜'}</div>`;b.onclick=()=>openWorld(i);$('worldList').appendChild(b);});}
@@ -130,11 +157,74 @@ function startGame(c,m){targetColor=c;mode=m;popped=0;misses=0;spawned=0;activeB
 function spawnOne(){if(!live)return;let field=$('playfield');let isTarget=mode==='free'||Math.random()<(mode==='free'?.5:.58);let c=isTarget?targetColor:colors.filter(x=>x.name!==targetColor.name)[Math.floor(Math.random()*(colors.length-1))];let el=document.createElement('button');el.className='balloon';el.setAttribute('aria-label',c.name+' balloon');el.style.background=c.hex;el.style.setProperty('--tail',c.tail);el.style.left=(4+Math.random()*82)+'%';el.style.top=(9+Math.random()*68)+'%';el.style.animationDelay=(Math.random()*.8)+'s';el.textContent=['✦','•',''][Math.floor(Math.random()*3)];field.appendChild(el);let item={el,c,timer:null};activeBalloons.push(item);el.onclick=()=>pop(item);item.timer=setTimeout(()=>removeBalloon(item),mode==='free'?9000:7000);}
 function removeBalloon(item){clearTimeout(item.timer);let i=activeBalloons.indexOf(item);if(i>=0)activeBalloons.splice(i,1);item.el.remove();}
 function pop(item){if(!live||!activeBalloons.includes(item))return;let correct=mode==='free'||item.c.name===targetColor.name;if(correct){popped++;beep(660+Math.random()*180,.08);item.el.classList.add('pop');setTimeout(()=>removeBalloon(item),130);if(mode!=='free'){$('counter').textContent=`${popped} / ${needed}`;$('gameBar').style.width=(popped/needed*100)+'%';if(popped>=needed){finish();return;}}else{$('counter').textContent=`${popped} popped`;}}else{misses++;beep(260,.12);item.el.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240});if(save.hints){$('gameTip').textContent=`Oops, let's find ${targetColor.name.toLowerCase()}! 😊`;setTimeout(()=>{if(live)$('gameTip').textContent='You are doing great. Keep looking!';},1300);}}}
-function finish(){live=false;clearInterval(spawnTimer);activeBalloons.forEach(removeBalloon);let stars=misses===0?3:misses===1?2:1;save.done[level]=Math.max(save.done[level]||0,stars);let w=worldIndex(level),isWorldEnd=(level%9===0);let award=isWorldEnd&&!save.stickers.includes(w);if(award)save.stickers.push(w);persist();$('rewardEmoji').textContent=['🌟','🎉','🎊','🏆','🎡'][w];$('resultTitle').textContent=['Wonderful!','Cloud-tastic!','Garden-tastic!','Party time!','Parade champion!'][w];$('resultStars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);$('resultText').textContent=misses===0?'A perfect parade! You popped every color just right!':misses===1?'You did it! Every balloon is a new chance to learn!':'Hooray! You finished the level. Great popping!';$('stickerAward').textContent=award?`New world friend unlocked: ${stickers[w]}!`:'Lovely popping! Keep collecting stars!';$('nextBtn').textContent=level===45?'Play again ↻':'Next Level ➜';$('nextBtn').onclick=()=>{if(level===45){level=1;openWorld(0);}else{level++;prepareChoose();}};show('result');beep(880,.22);speak('Hooray! You did it!');}
-function quit(){live=false;clearInterval(spawnTimer);activeBalloons.forEach(removeBalloon);show(mode==='free'?'home':'levels');}
+function finish(){live=false;clearInterval(spawnTimer);[...activeBalloons].forEach(removeBalloon);let stars=misses===0?3:misses===1?2:1;save.done[level]=Math.max(save.done[level]||0,stars);let w=worldIndex(level),isWorldEnd=(level%9===0);let award=isWorldEnd&&!save.stickers.includes(w);if(award)save.stickers.push(w);persist();$('rewardEmoji').textContent=['🌟','🎉','🎊','🏆','🎡'][w];$('resultTitle').textContent=['Wonderful!','Cloud-tastic!','Garden-tastic!','Party time!','Parade champion!'][w];$('resultStars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);$('resultText').textContent=misses===0?'A perfect parade! You popped every color just right!':misses===1?'You did it! Every balloon is a new chance to learn!':'Hooray! You finished the level. Great popping!';$('stickerAward').textContent=award?`New world friend unlocked: ${stickers[w]}!`:'Lovely popping! Keep collecting stars!';$('nextBtn').textContent=level===45?'Play again ↻':'Next Level ➜';$('nextBtn').onclick=()=>{if(level===45){level=1;openWorld(0);}else{level++;prepareChoose();}};show('result');beep(880,.22);speak('Hooray! You did it!');}
+function quit(){live=false;clearInterval(spawnTimer);[...activeBalloons].forEach(removeBalloon);show(mode==='free'?'home':'levels');}
 function renderStickers(){$('stickerGrid').innerHTML='';worlds.forEach((w,i)=>{let d=document.createElement('div');d.className='sticker '+(save.stickers.includes(i)?'':'lock');d.innerHTML=`${save.stickers.includes(i)?stickers[i]:'🔒'}<small>${w.name.split(' ')[0]}</small>`;$('stickerGrid').appendChild(d);});}
+const gardenStickers=[
+ [0,'bee','🐝','Bee'],[0,'sun','☀️','Sun'],[0,'flower','🌻','Sunflower'],
+ [1,'butterfly','🦋','Butterfly'],[1,'cloud','☁️','Cloud'],[2,'unicorn','🦄','Unicorn'],
+ [3,'frog','🐸','Frog'],[4,'lion','🦁','Lion']
+];
+const keepInside=value=>Math.max(0,Math.min(1,value));
+function renderGarden(){
+ const field=$('garden'), picker=$('gardenPicker');
+ field.replaceChildren();picker.replaceChildren();
+ const available=gardenStickers.filter(([world])=>save.stickers.includes(world));
+ $('gardenHint').textContent=available.length?'Add a sticker and drag it anywhere. Arrow keys also move a selected sticker.':'Finish a Kids world to unlock stickers for this playground.';
+ $('gardenClear').disabled=!Object.keys(save.garden).length;
+ for(const [,id,emoji,label] of available){
+  const add=document.createElement('button');
+  add.className='pill';add.textContent=emoji;add.setAttribute('aria-label','Add '+label);
+  add.disabled=!!save.garden[id];
+  add.onclick=()=>{
+   const count=Object.keys(save.garden).length;
+   save.garden[id]={x:.18+(count%4)*.21,y:count<4?.34:.68};
+   persist();renderGarden();field.querySelector('[data-sticker="'+id+'"]').focus();
+  };
+  picker.append(add);
+  if(!save.garden[id])continue;
+  const sticker=document.createElement('button'), position=save.garden[id];
+  sticker.className='garden-sticker';sticker.dataset.sticker=id;sticker.textContent=emoji;
+  sticker.setAttribute('aria-label','Move '+label);
+  const draw=()=>{sticker.style.setProperty('--x',position.x);sticker.style.setProperty('--y',position.y)};
+  draw();
+  let drag=null;
+  sticker.onpointerdown=event=>{
+   if(drag||event.button!==0)return;
+   event.preventDefault();
+   sticker.setPointerCapture(event.pointerId);
+   drag={id:event.pointerId,x:event.clientX,y:event.clientY,startX:position.x,startY:position.y,
+    width:Math.max(1,field.clientWidth-sticker.offsetWidth),height:Math.max(1,field.clientHeight-sticker.offsetHeight)};
+  };
+  sticker.onpointermove=event=>{
+   if(drag?.id!==event.pointerId)return;
+   position.x=keepInside(drag.startX+(event.clientX-drag.x)/drag.width);
+   position.y=keepInside(drag.startY+(event.clientY-drag.y)/drag.height);
+   draw();
+  };
+  sticker.onlostpointercapture=()=>{drag=null;persist()};
+  sticker.onkeydown=event=>{
+   const step={ArrowLeft:[-.05,0],ArrowRight:[.05,0],ArrowUp:[0,-.05],ArrowDown:[0,.05]}[event.key];
+   if(!step)return;
+   event.preventDefault();position.x=keepInside(position.x+step[0]);position.y=keepInside(position.y+step[1]);draw();persist();
+  };
+  field.append(sticker);
+ }
+}
+$('playgroundBtn').onclick=()=>{show('playground');renderGarden()};
+$('playgroundBack').onclick=()=>{renderStickers();show('collection')};
+$('gardenClear').onclick=()=>{save.garden={};persist();renderGarden()};
+const melodies={
+ correct:[[740,.08,0]],wrong:[[180,.16,0,'triangle']],
+ combo:[[620,.12,0],[820,.12,.09],[1100,.16,.18]],
+ level:[[660,.16,0],[830,.16,.12],[990,.25,.24]],
+ arena:[[523,.19,0],[659,.19,.12],[784,.19,.24],[1047,.42,.36]]
+};
+document.addEventListener('parade-sound',event=>{
+ for(const note of melodies[event.detail])beep(...note);
+});
 function toggle(el,key){save[key]=!save[key];el.classList.toggle('on',save[key]);persist();}
-$('playBtn').onclick=()=>{buildWorlds();show('map');};$('freeBtn').onclick=()=>startGame(colors[Math.floor(Math.random()*colors.length)],'free');$('mapHome').onclick=()=>show('home');$('backMap').onclick=()=>{buildWorlds();show('map');};$('chooseBack').onclick=()=>openWorld(worldIndex(level));$('quitGame').onclick=quit;$('resultMap').onclick=()=>{buildWorlds();show('map');};$('collectionBtn').onclick=()=>{renderStickers();show('collection');};$('collectionBack').onclick=()=>show('home');$('settingsBtn').onclick=()=>show('settings');$('settingsBack').onclick=()=>show('home');$('soundBtn').onclick=()=>toggle($('soundToggle'),'sound');$('soundToggle').onclick=()=>toggle($('soundToggle'),'sound');$('voiceToggle').onclick=()=>toggle($('voiceToggle'),'voice');$('hintToggle').onclick=()=>toggle($('hintToggle'),'hints');$('resetBtn').onclick=()=>{if(confirm('Grown-up: reset all stars, stickers and level progress on this device?')){save={...defaults,done:{},best:{},stickers:[]};persist();buildWorlds();show('home');toast('Progress reset. A fresh parade awaits!');}}; 
+$('playBtn').onclick=()=>{buildWorlds();show('map');};$('freeBtn').onclick=()=>startGame(colors[Math.floor(Math.random()*colors.length)],'free');$('mapHome').onclick=()=>show('home');$('backMap').onclick=()=>{buildWorlds();show('map');};$('chooseBack').onclick=()=>openWorld(worldIndex(level));$('quitGame').onclick=quit;$('resultMap').onclick=()=>{buildWorlds();show('map');};$('collectionBtn').onclick=()=>{renderStickers();show('collection');};$('collectionBack').onclick=()=>show('home');$('settingsBtn').onclick=()=>{if(live)quit();show('settings')};$('settingsBack').onclick=()=>show('home');$('soundBtn').onclick=()=>toggle($('soundToggle'),'sound');$('soundToggle').onclick=()=>toggle($('soundToggle'),'sound');$('voiceToggle').onclick=()=>toggle($('voiceToggle'),'voice');$('hintToggle').onclick=()=>toggle($('hintToggle'),'hints');$('resetBtn').onclick=()=>{if(confirm('Grown-up: reset all stars, stickers and level progress on this device?')){save={...defaults,done:{},best:{},stickers:[],garden:{}};document.dispatchEvent(new Event('parade-reset'));persist();buildWorlds();show('home');toast('Progress reset. A fresh parade awaits!');}};
 $('voiceToggle').classList.toggle('on',save.voice);$('soundToggle').classList.toggle('on',save.sound);$('hintToggle').classList.toggle('on',save.hints);
 updateHome();
 })();
@@ -151,35 +241,318 @@ body.challenge-theme{background:#090d1c;color:#edf3ff}body.challenge-theme #app{
 .ch-ball{position:absolute;border-radius:50% 50% 46% 46%;border:2px solid #ffffffaa;box-shadow:inset -9px -9px 0 #0003,inset 6px 6px 0 #fff6,0 0 18px var(--glow);display:grid;place-items:center;color:#18213a;font-size:17px;font-weight:900;will-change:transform;touch-action:manipulation}.ch-ball:after{content:"";position:absolute;bottom:-8px;left:calc(50% - 5px);border-left:5px solid transparent;border-right:5px solid transparent;border-top:10px solid var(--glow)}
 .ch-meter{height:8px;background:#2b3757;border-radius:10px;overflow:hidden;margin:12px 0}.ch-meter div{height:100%;width:100%;background:linear-gradient(90deg,#40d2e4,#8b75f7);transition:width .15s}.ch-legend{display:flex;gap:9px;align-items:center;font-weight:800}.ch-dot{width:18px;height:18px;border-radius:50%;border:2px solid #fff9;display:inline-block}.ch-result{text-align:center;padding:26px 12px}.ch-result h2{font-size:35px;margin:7px 0}.ch-result .big{font-size:54px;font-weight:950;color:#66d9fa}.ch-feedback{min-height:23px;color:#b8c9e8;text-align:center;font-weight:750;margin-top:8px}.ch-hide{display:none!important}
 @media(min-width:700px){.ch-grid{grid-template-columns:repeat(3,1fr)}.ch-levels{grid-template-columns:repeat(10,minmax(0,1fr))}}@media(max-width:380px){.ch-stats{gap:4px}.ch-stat{padding:9px 2px}.ch-btn{padding:10px}}
+.senior-entry{background:linear-gradient(120deg,#713393,#b83963)}
+body.senior-theme #chArena{background:radial-gradient(ellipse at 55% 40%,#492755,#1b122e 75%)}
+.ch-ball{left:0;top:0}
+.ch-ball:before{content:"";position:absolute;top:calc(100% + 7px);left:calc(50% - 1px);width:2px;height:21px;background:#d5e2ffb3;pointer-events:none}
+.ch-ball:after{pointer-events:none}
+.ch-ball.creature{border-radius:24%;background:#ffffff12;box-shadow:0 0 12px var(--glow);font-size:32px;padding:0}
+.ch-ball.creature:before,.ch-ball.creature:after{display:none}
+#chTargetDot.creature-dot{display:grid;place-items:center;border:0;width:28px;height:28px;font-size:23px}
+#chPrize{min-height:1.5em;font-weight:800;color:#ffe38c}
+#chCelebration{height:60px;line-height:60px;font-size:38px}
+#chCelebration.level{box-shadow:none;background:none;animation:prize-bounce .65s ease-out}
+#chCelebration.arena{animation:prize-bounce .95s ease-out 2;background:radial-gradient(ellipse,#ffd75c44,transparent 68%)}
+@keyframes prize-bounce{0%{transform:scale(.45)}55%{transform:scale(1.2)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){#chCelebration.level,#chCelebration.arena{animation:none}}
+@media(max-width:619px){
+ #chPlay .ch-header{margin-bottom:8px}
+ #chPlay .ch-stats,#chPlay .ch-meter{margin:8px 0}
+ #chArena{height:clamp(170px,calc(100dvh - 285px - env(safe-area-inset-bottom, 0px)),465px);min-height:0}
+}
 </style>
 <script>
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
 const palette=[['CYAN','#46d5f3'],['PINK','#ff78b8'],['GOLD','#ffcf5b'],['LIME','#7fe3a1'],['VIOLET','#b49bff'],['CORAL','#ff846f']];
-const worlds=[['Neon Start','⚡','Build your timing'],['Speed Circuit','🏁','Faster targets'],['Color Clash','🎯','More distractions'],['Reflex Rush','💨','Quick reactions'],['Chaos Zone','🌀','Mixed trajectories'],['Turbo Track','🚀','Rapid sequences'],['Precision Lab','🔬','Smaller targets'],['Hyper Pulse','💠','Sharper timing'],['Extreme Arena','🔥','Advanced control'],['Master Mode','🏆','The final test']];
-const KEY='popParadeChallengeV1';let state={done:{},best:{}};try{let x=JSON.parse(localStorage.getItem(KEY)||'{}');state={done:x.done||{},best:x.best||{}}}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
-const root=document.createElement('section');root.id='challengeArea';root.innerHTML=`<div class="ch-header"><div><div class="ch-label">Pop Parade // Arcade Edition</div><div class="ch-title" id="chHeading">CHALLENGING MODE</div><div class="ch-sub" id="chSubtitle">100 levels · 10 worlds · Ages 13+</div></div><button class="ch-btn" id="chHome">← Kids & Free Pop</button></div><div id="chLanding"><div class="ch-panel"><div style="font-size:35px">⚡ 🎯 🏆</div><h2 style="margin:8px 0">Speed. Precision. Streaks.</h2><p class="ch-sub">Pop the target color before time runs out. Avoid wrong colors, build combos and earn your way through 100 increasingly demanding levels. Every 10 levels introduces a new challenge.</p><div class="ch-stats"><div class="ch-stat"><strong id="chCompleted">0/100</strong><small>LEVELS</small></div><div class="ch-stat"><strong id="chTotalBest">0</strong><small>BEST SCORE</small></div><div class="ch-stat"><strong id="chUnlocked">1</strong><small>NEXT LEVEL</small></div><div class="ch-stat"><strong>10</strong><small>WORLDS</small></div></div><button class="ch-btn main" id="chContinue">▶ Continue</button></div><h3>Choose an arena</h3><div class="ch-grid" id="chWorlds"></div></div><div id="chLevels" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chBackWorlds">← Arenas</button><strong id="chWorldName"></strong></div><div class="ch-levels" id="chLevelGrid"></div><p class="ch-sub">Finish a level to unlock the next. You can replay completed levels to improve your score.</p></div><div id="chPlay" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chExit">✕ Exit</button><div class="ch-legend"><span class="ch-dot" id="chTargetDot"></span><span id="chTargetText">TARGET</span></div><strong id="chLevelName">LEVEL 1</strong></div><div class="ch-stats"><div class="ch-stat"><strong id="chTime">45</strong><small>SECONDS</small></div><div class="ch-stat"><strong id="chHits">0/10</strong><small>HITS</small></div><div class="ch-stat"><strong id="chScore">0</strong><small>SCORE</small></div><div class="ch-stat"><strong id="chCombo">x1</strong><small>COMBO</small></div></div><div class="ch-meter"><div id="chTimeBar"></div></div><div id="chArena" aria-label="Challenging balloon arena"></div><div class="ch-feedback" id="chFeedback">Pop the target color. Wrong pops cost time and points.</div></div><div id="chResult" class="ch-hide"><div class="ch-panel ch-result"><div class="ch-label" id="chResultTag">LEVEL COMPLETE</div><h2 id="chResultTitle">LEVEL CLEARED</h2><div class="big" id="chFinalScore">0</div><p class="ch-sub" id="chResultInfo"></p><div class="btnrow"><button class="ch-btn main" id="chNext">Next level →</button><button class="ch-btn" id="chRetry">↻ Retry</button><button class="ch-btn" id="chResultsMap">Arenas</button></div></div></div>`;
+const challengeWorlds=[
+ ['Neon Start','⚡','Build your timing'],['Speed Circuit','🏁','Faster targets'],['Color Clash','🎯','More distractions'],
+ ['Reflex Rush','💨','Quick reactions'],['Chaos Zone','🌀','Mixed trajectories'],['Turbo Track','🚀','Rapid sequences'],
+ ['Precision Lab','🔬','Smaller targets'],['Hyper Pulse','💠','Sharper timing'],['Extreme Arena','🔥','Advanced control'],
+ ['Master Mode','🏆','The original finale'],['Skyway','☁️'],['Sunset Sprint','🌅'],['Crystal Cavern','💎'],['Thunder Run','🌩️'],
+ ['Comet Trail','☄️'],['Wild Current','🌊'],['Ice Drift','❄️'],['Blazing Loop','🔥'],['Moonbase','🌙'],['Vortex','🌀'],
+ ['Flashpoint','💥'],['Deep Space','🪐'],['Mirage','🏜️'],['Storm Gate','🌪️'],['Photon Field','💡'],['Nova Route','🌠'],
+ ['Gravity Well','🛰️'],['Final Orbit','🌌'],['Rainbow Rush','🌈'],['Parade Legends','🏆']
+];
+const seniorWorlds=[
+ ['Monster Alley','👹'],['Alien Signal','👽'],['Haunted Hall','👻'],['Zombie Crossing','🧟'],
+ ['Midnight Carnival','🎡'],['Creature Lab','🧪'],['Night Shift','🌙'],['Final Fright','🏆']
+];
+const creatures=[['MONSTER','#ff8475','👹'],['ALIEN','#7fe3a1','👽'],['GHOST','#d9ddff','👻'],['ZOMBIE','#b49bff','🧟']];
+const arenaSize=10;
+function readProgress(key){
+ try{
+  const previous=JSON.parse(localStorage.getItem(key)||'{}');
+  return {done:previous.done||{},best:previous.best||{},medals:previous.medals||{}};
+ }catch{return {done:{},best:{},medals:{}}}
+}
+const modes={
+ challenge:{key:'popParadeChallengeV1',title:'Challenging Mode',age:7,worlds:challengeWorlds,targets:palette},
+ senior:{key:'popParadeSeniorV1',title:'Seniors Mode',age:13,worlds:seniorWorlds,targets:creatures}
+};
+for(const mode of Object.values(modes))mode.state=readProgress(mode.key);
+let active=modes.challenge;
+const senior=()=>active===modes.senior;
+const limit=()=>active.worlds.length*arenaSize;
+const sound=cue=>document.dispatchEvent(new CustomEvent('parade-sound',{detail:cue}));
+function save(){
+ try{localStorage.setItem(active.key,JSON.stringify(active.state))}catch(e){}
+}
+document.addEventListener('parade-reset',()=>{
+ for(const mode of Object.values(modes)){
+  mode.state={done:{},best:{},medals:{}};
+  try{localStorage.removeItem(mode.key)}catch(e){}
+ }
+});
+const root=document.createElement('section');root.id='challengeArea';root.innerHTML=`<div class="ch-header"><div><div class="ch-label">Pop Parade // Arcade Edition</div><div class="ch-title" id="chHeading">CHALLENGING MODE</div><div class="ch-sub" id="chSubtitle"></div></div><button class="ch-btn" id="chHome">← Home</button></div><div id="chLanding"><div class="ch-panel"><div style="font-size:35px">⚡ 🎯 🏆</div><h2 style="margin:8px 0">Speed. Precision. Streaks.</h2><p class="ch-sub" id="chInstructions"></p><div class="ch-stats"><div class="ch-stat"><strong id="chCompleted"></strong><small>LEVELS</small></div><div class="ch-stat"><strong id="chTotalBest">0</strong><small>BEST SCORE</small></div><div class="ch-stat"><strong id="chUnlocked">1</strong><small>NEXT LEVEL</small></div><div class="ch-stat"><strong id="chTrophies"></strong><small>ARENA TROPHIES</small></div></div><p class="ch-sub" id="chMedals"></p><button class="ch-btn main" id="chContinue">▶ Continue</button></div><h3>Choose an arena</h3><div class="ch-grid" id="chWorlds"></div></div><div id="chLevels" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chBackWorlds">← Arenas</button><strong id="chWorldName"></strong></div><div class="ch-levels" id="chLevelGrid"></div><p class="ch-sub">Finish a level to unlock the next. You can replay completed levels to improve your score.</p></div><div id="chPlay" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chExit">✕ Exit</button><div class="ch-legend"><span class="ch-dot" id="chTargetDot"></span><span id="chTargetText">TARGET</span></div><strong id="chLevelName">LEVEL 1</strong></div><div class="ch-stats"><div class="ch-stat"><strong id="chTime">45</strong><small>SECONDS</small></div><div class="ch-stat"><strong id="chHits">0/10</strong><small>HITS</small></div><div class="ch-stat"><strong id="chScore">0</strong><small>SCORE</small></div><div class="ch-stat"><strong id="chCombo">x1</strong><small>COMBO</small></div></div><div class="ch-meter"><div id="chTimeBar"></div></div><div id="chArena" aria-label="Challenging balloon arena"></div><div class="ch-feedback" id="chFeedback">Pop the target color. Wrong pops cost time and points.</div></div><div id="chResult" class="ch-hide"><div class="ch-panel ch-result"><div id="chCelebration" aria-hidden="true"></div><div class="ch-label" id="chResultTag">LEVEL COMPLETE</div><h2 id="chResultTitle">LEVEL CLEARED</h2><div class="big" id="chFinalScore">0</div><p class="ch-sub" id="chResultInfo"></p><p id="chPrize"></p><div class="btnrow"><button class="ch-btn main" id="chNext">Next level →</button><button class="ch-btn" id="chRetry">↻ Retry</button><button class="ch-btn" id="chResultsMap">Arenas</button></div></div></div>`;
 $('app').insertBefore(root,$('toast'));
-let page='landing',world=0,level=1,run=null,raf=0,spawner=0,lastFrame=0,items=[],serial=0;
-function screen(name){page=name;['chLanding','chLevels','chPlay','chResult'].forEach(x=>$(x).classList.toggle('ch-hide',x!==({landing:'chLanding',levels:'chLevels',play:'chPlay',result:'chResult'}[name])));window.scrollTo(0,0)}
-function maxUnlocked(){for(let i=1;i<=100;i++)if(!state.done[i])return i;return 100}
-function doneCount(){return Object.keys(state.done).filter(x=>+x>=1&&+x<=100&&state.done[x]).length}
-function enter(){document.body.classList.add('challenge-theme');if(window.PopParadeAndroid)PopParadeAndroid.setChallengeTheme(true);$('chHeading').textContent='CHALLENGING MODE';$('chSubtitle').textContent='100 levels · 10 worlds · Ages 13+';landing()}
-function leave(){stop();document.body.classList.remove('challenge-theme');if(window.PopParadeAndroid)PopParadeAndroid.setChallengeTheme(false);screen('landing');document.querySelectorAll('#app>.screen').forEach(x=>x.classList.remove('active'));$('home').classList.add('active');window.scrollTo(0,0)}
-function landing(){stop();$('chCompleted').textContent=doneCount()+'/100';$('chTotalBest').textContent=Math.max(0,...Object.values(state.best).map(Number)).toLocaleString();$('chUnlocked').textContent=maxUnlocked();$('chWorlds').innerHTML='';worlds.forEach((w,i)=>{let n=0;for(let j=i*10+1;j<=i*10+10;j++)if(state.done[j])n++;let b=document.createElement('button');b.className='ch-world';b.innerHTML=`<span class="ch-emoji">${w[1]}</span><b>${String(i+1).padStart(2,'0')} · ${w[0]}</b><small>${w[2]} · Levels ${i*10+1}–${i*10+10}</small><small>${n}/10 cleared</small><div class="ch-progress"><div style="width:${n*10}%"></div></div>`;b.onclick=()=>openWorld(i);$('chWorlds').append(b)});screen('landing')}
-function openWorld(i){stop();world=i;$('chWorldName').textContent=`${worlds[i][1]} ${worlds[i][0]}`;$('chLevelGrid').innerHTML='';for(let n=i*10+1;n<=i*10+10;n++){let unlocked=n<=maxUnlocked()||!!state.done[n];let b=document.createElement('button');b.className='ch-level'+(state.done[n]?' done':'')+(unlocked?'':' locked');b.disabled=!unlocked;b.innerHTML=`${n}<small>${state.done[n]?'✓ CLEARED':unlocked?'PLAY':'LOCKED'}</small>`;b.onclick=()=>start(n);$('chLevelGrid').append(b)}screen('levels')}
-function config(n){let t=(n-1)/99;return {goal:8+Math.floor((n-1)/8),duration:Math.max(35,54-Math.floor((n-1)/8)),interval:Math.max(370,1100-Math.floor(t*700)),speed:34+t*116,diameter:Math.round(66-t*20),max:Math.min(12,5+Math.floor(t*7)),targetRate:Math.max(.43,.7-t*.22)}}
-function stop(){if(raf)cancelAnimationFrame(raf);raf=0;if(spawner)clearInterval(spawner);spawner=0;items.forEach(x=>x.el.remove());items=[];run=null}
-function start(n){stop();level=n;world=Math.floor((n-1)/10);let cfg=config(n),target=palette[(n+Math.floor(n/10))%palette.length];run={cfg,target,hits:0,score:0,combo:0,wrong:0,seconds:cfg.duration,started:performance.now(),last:performance.now(),active:true};$('chLevelName').textContent='LEVEL '+n;$('chTargetText').textContent='POP '+target[0];$('chTargetDot').style.background=target[1];$('chArena').innerHTML='';$('chFeedback').textContent='Pop '+target[0]+'. Wrong pops cost 2 seconds and 100 points.';updateHud();screen('play');for(let i=0;i<3;i++)spawn(i===0);spawner=setInterval(()=>{if(run&&items.length<run.cfg.max)spawn()},cfg.interval);lastFrame=performance.now();raf=requestAnimationFrame(frame)}
-function spawn(forceTarget=false){if(!run||!run.active)return;const r=run,cfg=r.cfg,arena=$('chArena');let isTarget=forceTarget||Math.random()<cfg.targetRate;let color=isTarget?r.target:palette.filter(x=>x!==r.target)[Math.floor(Math.random()*5)];let d=cfg.diameter;let w=Math.max(d+10,arena.clientWidth),h=Math.max(d+10,arena.clientHeight);let el=document.createElement('button');el.className='ch-ball';el.style.width=d+'px';el.style.height=Math.round(d*1.13)+'px';el.style.background=color[1];el.style.setProperty('--glow',color[1]);el.setAttribute('aria-label',color[0]+' balloon');let x=Math.random()*Math.max(1,w-d-8)+4,y=Math.random()*Math.max(1,h-d*1.13-10)+4;let a=Math.random()*Math.PI*2;let speed=cfg.speed*(.75+Math.random()*.5);let item={id:++serial,el,color,x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,age:0};el.onclick=()=>hit(item);arena.append(el);items.push(item)}
-function remove(item){let i=items.indexOf(item);if(i>=0)items.splice(i,1);item.el.remove()}
-function hit(item){let r=run;if(!r||!r.active||!items.includes(item))return;if(item.color===r.target){r.hits++;r.combo++;let mult=Math.min(5,1+Math.floor(r.combo/4));r.score+=100*mult;$('chFeedback').textContent=r.combo>=4?`COMBO x${mult} · Keep it going!`:'Clean hit +100';remove(item);if(r.hits>=r.cfg.goal){end(true);return}if(items.filter(x=>x.color===r.target).length===0)spawn(true)}else{r.wrong++;r.combo=0;r.score=Math.max(0,r.score-100);r.seconds=Math.max(0,r.seconds-2);$('chFeedback').textContent='Wrong color · −2 sec / −100 points';remove(item);if(r.seconds<=0){end(false);return}}updateHud()}
-function updateHud(){if(!run)return;let r=run;$('chTime').textContent=Math.ceil(r.seconds);$('chHits').textContent=r.hits+'/'+r.cfg.goal;$('chScore').textContent=r.score.toLocaleString();$('chCombo').textContent='x'+Math.min(5,1+Math.floor(r.combo/4));$('chTimeBar').style.width=(Math.max(0,r.seconds)/r.cfg.duration*100)+'%'}
-function frame(now){if(!run||!run.active)return;let r=run,dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;r.seconds=Math.max(0,r.seconds-dt);if(r.seconds<=0){end(false);return}let arena=$('chArena'),w=arena.clientWidth,h=arena.clientHeight;for(const item of [...items]){item.age+=dt;item.x+=item.vx*dt;item.y+=item.vy*dt;let bw=item.el.offsetWidth,bh=item.el.offsetHeight;if(item.x<=2){item.x=2;item.vx=Math.abs(item.vx)}if(item.x>=w-bw-2){item.x=Math.max(2,w-bw-2);item.vx=-Math.abs(item.vx)}if(item.y<=2){item.y=2;item.vy=Math.abs(item.vy)}if(item.y>=h-bh-2){item.y=Math.max(2,h-bh-2);item.vy=-Math.abs(item.vy)}item.el.style.transform=`translate(${item.x}px,${item.y}px)`;if(item.age>Math.max(4.2,9-(level/100)*4)){remove(item)}}if(items.filter(x=>x.color===r.target).length===0)spawn(true);updateHud();raf=requestAnimationFrame(frame)}
-function end(win){if(!run)return;let r=run;let finalScore=r.score+ (win?Math.round(r.seconds)*20:0);let wrong=r.wrong,hits=r.hits,goal=r.cfg.goal;run.active=false;if(raf)cancelAnimationFrame(raf);raf=0;clearInterval(spawner);spawner=0;items.forEach(x=>x.el.remove());items=[];if(win){state.done[level]=true;state.best[level]=Math.max(state.best[level]||0,finalScore);save()}$('chResultTag').textContent=win?'LEVEL COMPLETE':'TIME EXPIRED';$('chResultTitle').textContent=win?'ARENA CLEARED':'TRY AGAIN';$('chFinalScore').textContent=finalScore.toLocaleString();$('chResultInfo').textContent=`${hits}/${goal} targets · ${wrong} wrong pops · ${win?'Best '+state.best[level].toLocaleString()+' points':'Build a streak to score faster'}`;$('chNext').style.display=win?'':'none';$('chNext').textContent=level===100?'All 100 cleared ✓':'Next level →';$('chNext').disabled=level===100;screen('result')}
-$('challengeBtn').onclick=enter;$('chHome').onclick=leave;$('chContinue').onclick=()=>start(maxUnlocked());$('chBackWorlds').onclick=landing;$('chExit').onclick=()=>openWorld(world);$('chRetry').onclick=()=>start(level);$('chResultsMap').onclick=landing;$('chNext').onclick=()=>{if(level<100)start(level+1)};
+let world=0,level=1,run=null,raf=0,spawner=0,lastFrame=0,items=[];
+function screen(name){['chLanding','chLevels','chPlay','chResult'].forEach(x=>$(x).classList.toggle('ch-hide',x!==({landing:'chLanding',levels:'chLevels',play:'chPlay',result:'chResult'}[name])));window.scrollTo(0,0)}
+
+function maxUnlocked(){
+ for(let n=1;n<=limit();n++)if(!active.state.done[n])return n;
+ return limit();
+}
+function arenaClears(index){
+ const start=index*arenaSize+1;
+ let count=0;
+ for(let n=start;n<start+arenaSize;n++)if(active.state.done[n])count++;
+ return count;
+}
+function enter(mode){
+ active=mode;
+ document.body.classList.add('challenge-theme');
+ document.body.classList.toggle('senior-theme',senior());
+ window.PopParadeAndroid?.setChallengeTheme(true);
+ $('chHeading').textContent=active.title;
+ $('chSubtitle').textContent=limit()+' levels · '+active.worlds.length+' arenas · Ages '+active.age+'+';
+ $('chInstructions').textContent=senior()
+  ?'Pop the matching creatures. Targets move faster, disappear sooner, and change during a run.'
+  :'Pop the matching balloons before time runs out. Earn a medal in each level and a trophy for clearing each arena.';
+ $('chArena').setAttribute('aria-label',senior()?'Creature arena':'Balloon arena');
+ $('settingsBtn').hidden=true;
+ landing();
+}
+function leave(){
+ stop();
+ document.body.classList.remove('challenge-theme','senior-theme');
+ window.PopParadeAndroid?.setChallengeTheme(false);
+ $('settingsBtn').hidden=false;
+ screen('landing');
+ document.querySelectorAll('#app>.screen').forEach(x=>x.classList.remove('active'));
+ $('home').classList.add('active');
+ window.scrollTo(0,0);
+}
+function landing(){
+ stop();
+ const {done,best,medals}=active.state;
+ const cleared=active.worlds.map((_,i)=>arenaClears(i));
+ const count=cleared.reduce((sum,n)=>sum+n,0);
+ $('chCompleted').textContent=count+'/'+limit();
+ $('chTotalBest').textContent=Math.max(0,...Object.values(best).map(Number)).toLocaleString();
+ $('chUnlocked').textContent=count===limit()?'✓':maxUnlocked();
+ $('chContinue').textContent=count===limit()?'Replay finale':'▶ Continue';
+ $('chTrophies').textContent=cleared.filter(n=>n===arenaSize).length;
+ const totals=[0,0,0,0];
+ for(const n of Object.keys(done))if(done[n])totals[medals[n]||1]++;
+ $('chMedals').textContent='Level medals · 🥇 '+totals[3]+' · 🥈 '+totals[2]+' · 🥉 '+totals[1];
+ $('chWorlds').replaceChildren();
+ active.worlds.forEach(([name,emoji,description],index)=>{
+  const count=cleared[index],start=index*arenaSize+1;
+  const button=document.createElement('button');
+  button.className='ch-world';
+  button.innerHTML=`<span class="ch-emoji">${count===arenaSize?'🏆':emoji}</span><b>${name}</b>
+   <small>${description?description+' · ':''}Levels ${start}–${start+arenaSize-1}</small>
+   <small>${count}/${arenaSize} cleared</small><div class="ch-progress"><div style="width:${count/arenaSize*100}%"></div></div>`;
+  button.onclick=()=>openWorld(index);
+  $('chWorlds').append(button);
+ });
+ screen('landing');
+}
+const medalIcons=['','🥉','🥈','🥇'];
+function openWorld(index){
+ stop();
+ world=index;
+ const [name,emoji]=active.worlds[index], {done,medals}=active.state;
+ $('chWorldName').textContent=emoji+' '+name;
+ $('chLevelGrid').replaceChildren();
+ const start=index*arenaSize+1, unlockedThrough=maxUnlocked();
+ for(let n=start;n<start+arenaSize;n++){
+  const unlocked=n<=unlockedThrough||!!done[n];
+  const button=document.createElement('button');
+  button.className='ch-level'+(done[n]?' done':'')+(unlocked?'':' locked');
+  button.disabled=!unlocked;
+  button.innerHTML=n+'<small>'+(done[n]?medalIcons[medals[n]||1]+' CLEARED':unlocked?'PLAY':'LOCKED')+'</small>';
+  button.onclick=()=>startLevel(n);
+  $('chLevelGrid').append(button);
+ }
+ screen('levels');
+}
+function config(n){
+ const t=(n-1)/(limit()-1);
+ if(senior()){
+  return {goal:15+Math.floor(20*t),duration:39-12*t,interval:590-300*t,
+   speed:145+160*t,diameter:Math.round(53-13*t),max:8+Math.floor(6*t),targetRate:.46-.17*t,lifetime:4.5-2.1*t};
+ }
+ return {goal:8+Math.floor(25*t),duration:54-16*t,interval:1100-690*t,
+  speed:34+126*t,diameter:Math.round(68-20*t),max:5+Math.floor(7*t),targetRate:.72-.29*t,lifetime:9-4*t};
+}
+function stop(){
+ cancelAnimationFrame(raf);raf=0;
+ clearInterval(spawner);spawner=0;
+ items.forEach(item=>item.el.remove());items=[];run=null;
+}
+function showTarget(){
+ $('chTargetText').textContent='POP '+run.target[0];
+ const dot=$('chTargetDot');
+ dot.classList.toggle('creature-dot',senior());
+ dot.textContent=run.target[2]||'';
+ dot.style.background=senior()?'transparent':run.target[1];
+}
+function startLevel(n){
+ stop();
+ level=n;
+ world=Math.floor((n-1)/arenaSize);
+ const cfg=config(n), targetIndex=senior()?world%creatures.length:(n+world)%palette.length;
+ run={cfg,target:active.targets[targetIndex],hits:0,score:0,combo:0,wrong:0,seconds:cfg.duration};
+ $('chLevelName').textContent='LEVEL '+n;
+ showTarget();
+ $('chFeedback').textContent='Wrong pops cost '+(senior()?3:2)+' seconds and 100 points.';
+ screen('play');
+ document.dispatchEvent(new Event('parade-fit-arena'));
+ updateHud();
+ for(let i=0;i<(senior()?5:3);i++)spawn(i===0);
+ spawner=setInterval(()=>{if(items.length<cfg.max)spawn()},cfg.interval);
+ lastFrame=performance.now();
+ raf=requestAnimationFrame(frame);
+}
+function spawn(forceTarget=false){
+ const {cfg,target}=run,arena=$('chArena');
+ const alternatives=active.targets.filter(candidate=>candidate!==target);
+ const color=forceTarget||Math.random()<cfg.targetRate?target:alternatives[Math.floor(Math.random()*alternatives.length)];
+ const el=document.createElement('button'), width=cfg.diameter, height=senior()?width:Math.round(width*1.13);
+ const tail=senior()?0:29;
+ el.className=senior()?'ch-ball creature':'ch-ball';
+ el.style.width=width+'px';el.style.height=height+'px';if(!senior())el.style.background=color[1];
+ el.style.setProperty('--glow',color[1]);
+ el.textContent=color[2]||'';
+ el.setAttribute('aria-label',color[0]+(senior()?'':' balloon'));
+ const angle=Math.random()*Math.PI*2, speed=cfg.speed*(.85+Math.random()*.3);
+ const item={el,color,width,height:height+tail,age:0,
+  x:2+Math.random()*Math.max(0,arena.clientWidth-width-4),
+  y:2+Math.random()*Math.max(0,arena.clientHeight-height-tail-4),
+  vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed};
+ el.onclick=()=>hit(item);
+ draw(item);
+ arena.append(el);
+ items.push(item);
+}
+function draw(item){item.el.style.transform=`translate(${item.x}px,${item.y}px)`}
+function remove(item){items.splice(items.indexOf(item),1);item.el.remove()}
+function ensureTarget(){
+ if(items.some(item=>item.color===run.target))return;
+ if(items.length>=run.cfg.max)remove(items[0]);
+ spawn(true);
+}
+const multiplier=combo=>Math.min(5,1+Math.floor(combo/4));
+function hit(item){
+ const r=run;
+ if(!r||!items.includes(item))return;
+ remove(item);
+ if(item.color===r.target){
+  r.hits++;
+  r.combo++;
+  const mult=multiplier(r.combo), combo=r.combo%4===0;
+  r.score+=100*mult;
+  if(r.hits<r.cfg.goal||combo)sound(combo?'combo':'correct');
+  $('chFeedback').textContent=combo?'COMBO ×'+mult+'!':'Clean hit · +'+100*mult;
+  if(r.hits>=r.cfg.goal){end(true);return}
+  if(senior()&&r.hits%5===0){
+   r.target=creatures[(creatures.indexOf(r.target)+1)%creatures.length];
+   showTarget();
+   $('chFeedback').textContent+=' · New target: '+r.target[0];
+  }
+ }else{
+  const penalty=senior()?3:2;
+  r.wrong++;
+  r.combo=0;
+  r.score=Math.max(0,r.score-100);
+  r.seconds=Math.max(0,r.seconds-penalty);
+  sound('wrong');
+  $('chFeedback').textContent='Wrong pop · −'+penalty+' sec / −100 points';
+  if(!r.seconds){end(false);return}
+ }
+ ensureTarget();
+ updateHud();
+}
+function updateHud(){
+ const r=run;
+ $('chTime').textContent=Math.ceil(r.seconds);
+ $('chHits').textContent=r.hits+'/'+r.cfg.goal;
+ $('chScore').textContent=r.score.toLocaleString();
+ $('chCombo').textContent='×'+multiplier(r.combo);
+ $('chTimeBar').style.width=(r.seconds/r.cfg.duration*100)+'%';
+}
+function frame(now){
+ const r=run,elapsed=(now-lastFrame)/1000,dt=Math.min(.05,elapsed);
+ lastFrame=now;
+ r.seconds=Math.max(0,r.seconds-elapsed);
+ if(!r.seconds){end(false);return}
+ const arena=$('chArena');
+ for(const item of [...items]){
+  item.age+=elapsed;
+  if(item.age>=r.cfg.lifetime){remove(item);continue}
+  const right=Math.max(2,arena.clientWidth-item.width-2),bottom=Math.max(2,arena.clientHeight-item.height-2);
+  item.x+=item.vx*dt;item.y+=item.vy*dt;
+  if(item.x<=2){item.x=2;item.vx=Math.abs(item.vx)}
+  if(item.x>=right){item.x=right;item.vx=-Math.abs(item.vx)}
+  if(item.y<=2){item.y=2;item.vy=Math.abs(item.vy)}
+  if(item.y>=bottom){item.y=bottom;item.vy=-Math.abs(item.vy)}
+  draw(item);
+ }
+ ensureTarget();
+ updateHud();
+ raf=requestAnimationFrame(frame);
+}
+function end(win){
+ const r=run;
+ const score=r.score+(win?Math.round(r.seconds)*20:0);
+ const {done,best,medals}=active.state;
+ const firstClear=win&&!done[level];
+ const medal=r.wrong===0?3:r.wrong<=2?2:1;
+ stop();
+ let trophy=false;
+ if(win){
+  done[level]=true;
+  best[level]=Math.max(best[level]||0,score);
+  medals[level]=Math.max(medals[level]||1,medal);
+  trophy=firstClear&&arenaClears(world)===arenaSize;
+  save();
+  sound(trophy?'arena':'level');
+ }
+ const celebration=$('chCelebration');
+ celebration.className='';
+ void celebration.offsetWidth;
+ celebration.className=win?(trophy?'arena':'level'):'';
+ celebration.textContent=trophy?'🎊 🏆 🎊':win?'🎉 '+medalIcons[medal]+' 🎉':'⏱️';
+ $('chResultTag').textContent=trophy?'ARENA COMPLETE':win?'LEVEL COMPLETE':'TIME EXPIRED';
+ $('chResultTitle').textContent=trophy?active.worlds[world][0]+' cleared!':win?'Level '+level+' cleared!':'Try again';
+ $('chFinalScore').textContent=score.toLocaleString();
+ $('chResultInfo').textContent=r.hits+'/'+r.cfg.goal+' targets · '+r.wrong+' wrong pops'+(win?' · Best '+best[level].toLocaleString()+' points':'');
+ $('chPrize').textContent=trophy?'Arena trophy unlocked!':win?['','Bronze medal','Silver medal','Gold medal'][medal]:'';
+ $('chNext').hidden=!win||level===limit();
+ screen('result');
+}
+$('challengeBtn').onclick=()=>enter(modes.challenge);
+$('seniorBtn').onclick=()=>enter(modes.senior);
+$('chHome').onclick=leave;
+$('chContinue').onclick=()=>startLevel(maxUnlocked());
+$('chBackWorlds').onclick=landing;
+$('chExit').onclick=()=>openWorld(world);
+$('chRetry').onclick=()=>startLevel(level);
+$('chResultsMap').onclick=landing;
+$('chNext').onclick=()=>{if(level<limit())startLevel(level+1)};
 })();
 </script>
 
@@ -199,7 +572,7 @@ $('challengeBtn').onclick=enter;$('chHome').onclick=leave;$('chContinue').onclic
 <p><strong>No advertising or tracking:</strong> This app has no ads, in-app purchases, analytics or tracking SDKs, and requests no Internet, location, contacts or microphone permission. It does not ask children for names, ages or email addresses.</p>
 <p><strong>Spoken instructions:</strong> If enabled, spoken hints use your device's configured text-to-speech engine. The engine's provider may have its own privacy practices. You can turn off spoken instructions in the grown-up settings.</p>
 <p><strong>Privacy questions:</strong> Contact the developer through the project's GitHub Issues page; please do not post sensitive personal details publicly. Privacy information is also available on the project's public website.</p>
-<p><strong>Changes:</strong> Any future data collection or advertising would require updating this notice and relevant Play disclosures. Updated November 11, 2026.</p>
+<p><strong>Changes:</strong> Any future data collection or advertising would require updating this notice and relevant Play disclosures. Updated November 16, 2026.</p>
 </div></div>
 <script>
 (()=>{
