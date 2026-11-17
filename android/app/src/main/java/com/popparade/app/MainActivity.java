@@ -178,7 +178,7 @@ public final class MainActivity extends Activity {
         webView.evaluateJavascript(backScript, answer -> {
             if (!"true".equals(answer) && !isFinishing()) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Leave Pop Parade?")
+                        .setTitle("Leave " + getString(R.string.app_name) + "?")
                         .setMessage("Your completed levels are saved on this device.")
                         .setPositiveButton("Exit", (dialog, which) -> finish())
                         .setNegativeButton("Keep playing", null)

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff5df">
-<title>Pop Parade — Kids, Challenge & Seniors</title>
+<title>pop balloons: Learn &amp; fun</title>
 <style>
 :root{--ink:#35415c;--muted:#77819a;--pink:#ff8fb1;--yellow:#ffd76e;--blue:#83d5f4;--green:#9be3bd;--purple:#bba5f5;--cream:#fff8e9;--card:#fff;--shadow:0 9px 24px #52608018}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(145deg,#fff6e4,#f0f5ff);touch-action:manipulation}button{font:inherit;border:0;cursor:pointer;touch-action:manipulation;color:var(--ink)}button:focus-visible{outline:4px solid #536cba;outline-offset:3px}
@@ -55,6 +55,10 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
 .practice-balloon{position:relative;width:100%;max-width:150px;min-height:clamp(96px,28vw,146px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:8px 6px;border-radius:49%;border:2px solid #fff;background:var(--practice-balloon);box-shadow:inset -7px -7px #00000012,inset 5px 5px #ffffff80;font-size:clamp(12px,3.5vw,18px);font-weight:900}
 .practice-balloon:before{content:"";position:absolute;left:calc(50% - 1px);top:100%;height:25px;width:2px;background:#607ba5;pointer-events:none}
 .practice-balloon:after{content:"";position:absolute;top:100%;left:calc(50% - 5px);border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--practice-balloon);pointer-events:none}
+.practice-digit{font-size:clamp(25px,7vw,42px);line-height:1}
+#practiceTarget small,.practice-balloon small{font-size:clamp(12px,3vw,15px)}
+.brand{line-height:1.08;overflow-wrap:anywhere}
+.top>div:last-child,.logo{flex-shrink:0}
 .practice-word{max-width:100%;overflow-wrap:anywhere}
 .practice-picture{font-size:clamp(22px,7vw,35px);line-height:1.1}
 .practice-pop{animation:burst .22s forwards}
@@ -65,9 +69,9 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
 </head>
 <body>
 <div id="app">
- <div class="top"><div class="brand"><div class="logo">🎈</div>Pop Parade</div><div style="display:flex;gap:8px"><button class="iconbtn" id="soundBtn" aria-label="Toggle sound">🔊</button><button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙️</button></div></div>
+ <div class="top"><div class="brand"><div class="logo">🎈</div>pop balloons: Learn &amp; fun</div><div style="display:flex;gap:8px"><button class="iconbtn" id="soundBtn" aria-label="Toggle sound">🔊</button><button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙️</button></div></div>
  <div id="home" class="screen active">
-  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>Pop balloons to practice colors, letters, fruits and animals.</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Kids Mode</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>7+</small></button><button class="btn challenge-entry senior-entry" id="seniorBtn">👾 Seniors Mode <small>13+</small></button></div></div>
+  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>Pop balloons to practice colors, letters, numbers, fruits and animals.</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Kids Mode</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>7+</small></button><button class="btn challenge-entry senior-entry" id="seniorBtn">👾 Seniors Mode <small>13+</small></button></div></div>
   <div class="challenge-teaser">⚡ Play 300 levels in Challenging Mode or race faster creatures in Seniors Mode.</div>
   <div class="feature-row"><div class="feature"><span>🦋</span>Learn colors</div><div class="feature"><span>⭐</span>Earn stars</div><div class="feature"><span>🎁</span>Collect stickers</div></div>
   <div class="section-title"><h2>Your parade</h2><button class="pill" id="collectionBtn">🏅 Collection</button></div>
@@ -79,6 +83,7 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
   <div class="world-list">
    <button class="world" id="kidsColors"><span class="world-art">🎈</span><span class="world-info"><b>Colors</b><small>45 levels in five worlds</small></span></button>
    <button class="world" id="kids-alphabet"><span class="world-art">🔤</span><span class="world-info"><b>Alphabet</b><small>Practice A to Z</small></span></button>
+   <button class="world" id="kids-numbers"><span class="world-art">🔢</span><span class="world-info"><b>Numbers</b><small>Practice 0 to 10</small></span></button>
    <button class="world" id="kids-fruits"><span class="world-art">🍎</span><span class="world-info"><b>Fruits</b><small>Learn fruit names</small></span></button>
    <button class="world" id="kids-animals"><span class="world-art">🐘</span><span class="world-info"><b>Animals</b><small>Learn animal names</small></span></button>
   </div>
@@ -149,7 +154,7 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
   </div>
  </div>
  <div class="toast" id="toast"></div>
- <footer>Pop Parade V0.5 · A cheerful color-popping adventure · Progress stays on this device</footer>
+ <footer>pop balloons: Learn &amp; fun V0.6 · Progress stays on this device</footer>
 </div>
 <script>
 (()=>{
@@ -272,6 +277,9 @@ document.addEventListener('parade-sound',event=>{
 
 const learningTopics={
  alphabet:{name:'Alphabet',icon:'🔤',packSize:7,items:Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ',letter=>[letter])},
+ numbers:{name:'Numbers',icon:'🔢',packSize:11,items:[
+  'Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'
+ ].map((word,number)=>[String(number),null,word])},
  fruits:{name:'Fruits',icon:'🍎',packSize:13,items:[
   ['Apple','🍎'],['Banana','🍌'],['Orange','🍊'],['Pear','🍐'],['Strawberry','🍓'],['Grapes','🍇'],
   ['Watermelon','🍉'],['Peach','🍑'],['Cherries','🍒'],['Pineapple','🍍'],['Mango','🥭'],['Kiwi','🥝'],['Lemon','🍋'],
@@ -306,12 +314,22 @@ function shuffle(items){
 function practiceLabel(item){
  return topicKey==='alphabet'?item[0]+' '+item[0].toLowerCase():item[0];
 }
-function practicePrompt(item){return 'Pop '+(topicKey==='alphabet'?'the letter ':'')+item[0]}
+function practicePrompt(item,spoken=false){
+ if(topicKey==='alphabet')return 'Pop the letter '+item[0];
+ if(topicKey==='numbers')return 'Pop the number '+item[spoken?2:0];
+ return 'Pop '+item[0];
+}
 function paintPracticeItem(element,item){
  const label=document.createElement('span');
  label.className='practice-word';
  label.textContent=practiceLabel(item);
  element.replaceChildren(label);
+ if(topicKey==='numbers'){
+  label.classList.add('practice-digit');
+  const word=document.createElement('small');
+  word.textContent=item[2];
+  element.append(word);
+ }
  if(item[1]){
   const icon=document.createElement('span');
   icon.className='practice-picture';icon.setAttribute('aria-hidden','true');icon.textContent=item[1];
@@ -329,7 +347,8 @@ function openPracticePacks(key){
   const pack=offset/topic.packSize, items=topic.items.slice(offset,offset+topic.packSize);
   const button=document.createElement('button'), detail=document.createElement('small');
   button.className='pill practice-pack';
-  button.textContent=key==='alphabet'?items[0][0]+'–'+items.at(-1)[0]:topic.name+' '+(pack+1);
+  button.textContent=key==='numbers'?'Numbers 0–10':
+   key==='alphabet'?items[0][0]+'–'+items.at(-1)[0]:topic.name+' '+(pack+1);
   detail.textContent=save.learning[key]?.[pack]?'✓ Completed':items.length+' to learn';
   button.append(detail);button.onclick=()=>startPractice(pack);grid.append(button);
  }
@@ -373,14 +392,14 @@ function renderPracticeTurn(restoreFocus=false){
   tray.append(balloon);
  }
  if(restoreFocus)tray.firstElementChild.focus({preventScroll:true});
- speak(prompt);
+ speak(practicePrompt(target,true));
 }
 function answerPractice(balloon,item,target){
  if(!practice||balloon.disabled)return;
  if(item!==target){
   beep(290,.12);
   $('practiceFeedback').textContent='Try again. '+practicePrompt(target)+'.';
-  speak(practicePrompt(target));
+  speak(practicePrompt(target,true));
   return;
  }
  const session=practice, restoreFocus=document.activeElement===balloon;
@@ -413,7 +432,7 @@ $('kidsColors').onclick=()=>{buildWorlds();show('map')};
 for(const key of Object.keys(learningTopics))$('kids-'+key).onclick=()=>openPracticePacks(key);
 $('practiceMenuBack').onclick=()=>show('kids');
 $('practiceExit').onclick=$('practiceDoneBack').onclick=()=>openPracticePacks(topicKey);
-$('practiceListen').onclick=()=>{if(practice&&!$('practiceBalloons').firstElementChild.disabled)speak(practicePrompt(practice.turns[practice.index]))};
+$('practiceListen').onclick=()=>{if(practice&&!$('practiceBalloons').firstElementChild.disabled)speak(practicePrompt(practice.turns[practice.index],true))};
 
 function toggle(el,key){save[key]=!save[key];el.classList.toggle('on',save[key]);persist();}
 $('playBtn').onclick=()=>show('kids');$('freeBtn').onclick=()=>startGame(colors[Math.floor(Math.random()*colors.length)],'free');$('mapHome').onclick=()=>show('kids');$('backMap').onclick=()=>{buildWorlds();show('map');};$('chooseBack').onclick=()=>openWorld(worldIndex(level));$('quitGame').onclick=quit;$('resultMap').onclick=()=>{buildWorlds();show('map');};$('collectionBtn').onclick=()=>{renderStickers();show('collection');};$('collectionBack').onclick=()=>show('home');$('settingsBtn').onclick=()=>{if(live)quit();stopPractice();show('settings')};$('settingsBack').onclick=()=>show('home');$('soundBtn').onclick=()=>toggle($('soundToggle'),'sound');$('soundToggle').onclick=()=>toggle($('soundToggle'),'sound');$('voiceToggle').onclick=()=>toggle($('voiceToggle'),'voice');$('hintToggle').onclick=()=>toggle($('hintToggle'),'hints');$('resetBtn').onclick=()=>{if(confirm('Grown-up: reset all stars, stickers and level progress on this device?')){save={...defaults,done:{},best:{},stickers:[],garden:{},learning:{}};stopPractice();document.dispatchEvent(new Event('parade-reset'));persist();buildWorlds();show('home');toast('Progress reset. A fresh parade awaits!');}};
@@ -497,7 +516,7 @@ document.addEventListener('parade-reset',()=>{
   try{localStorage.removeItem(mode.key)}catch(e){}
  }
 });
-const root=document.createElement('section');root.id='challengeArea';root.innerHTML=`<div class="ch-header"><div><div class="ch-label">Pop Parade // Arcade Edition</div><div class="ch-title" id="chHeading">CHALLENGING MODE</div><div class="ch-sub" id="chSubtitle"></div></div><button class="ch-btn" id="chHome">← Home</button></div><div id="chLanding"><div class="ch-panel"><div style="font-size:35px">⚡ 🎯 🏆</div><h2 style="margin:8px 0">Speed. Precision. Streaks.</h2><p class="ch-sub" id="chInstructions"></p><div class="ch-stats"><div class="ch-stat"><strong id="chCompleted"></strong><small>LEVELS</small></div><div class="ch-stat"><strong id="chTotalBest">0</strong><small>BEST SCORE</small></div><div class="ch-stat"><strong id="chUnlocked">1</strong><small>NEXT LEVEL</small></div><div class="ch-stat"><strong id="chTrophies"></strong><small>ARENA TROPHIES</small></div></div><p class="ch-sub" id="chMedals"></p><button class="ch-btn main" id="chContinue">▶ Continue</button></div><h3>Choose an arena</h3><div class="ch-grid" id="chWorlds"></div></div><div id="chLevels" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chBackWorlds">← Arenas</button><strong id="chWorldName"></strong></div><div class="ch-levels" id="chLevelGrid"></div><p class="ch-sub">Finish a level to unlock the next. You can replay completed levels to improve your score.</p></div><div id="chPlay" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chExit">✕ Exit</button><div class="ch-legend"><span class="ch-dot" id="chTargetDot"></span><span id="chTargetText">TARGET</span></div><strong id="chLevelName">LEVEL 1</strong></div><div class="ch-stats"><div class="ch-stat"><strong id="chTime">45</strong><small>SECONDS</small></div><div class="ch-stat"><strong id="chHits">0/10</strong><small>HITS</small></div><div class="ch-stat"><strong id="chScore">0</strong><small>SCORE</small></div><div class="ch-stat"><strong id="chCombo">x1</strong><small>COMBO</small></div></div><div class="ch-meter"><div id="chTimeBar"></div></div><div id="chArena" aria-label="Challenging balloon arena"></div><div class="ch-feedback" id="chFeedback">Pop the target color. Wrong pops cost time and points.</div></div><div id="chResult" class="ch-hide"><div class="ch-panel ch-result"><div id="chCelebration" aria-hidden="true"></div><div class="ch-label" id="chResultTag">LEVEL COMPLETE</div><h2 id="chResultTitle">LEVEL CLEARED</h2><div class="big" id="chFinalScore">0</div><p class="ch-sub" id="chResultInfo"></p><p id="chPrize"></p><div class="btnrow"><button class="ch-btn main" id="chNext">Next level →</button><button class="ch-btn" id="chRetry">↻ Retry</button><button class="ch-btn" id="chResultsMap">Arenas</button></div></div></div>`;
+const root=document.createElement('section');root.id='challengeArea';root.innerHTML=`<div class="ch-header"><div><div class="ch-label">pop balloons: Learn &amp; fun // Arcade Edition</div><div class="ch-title" id="chHeading">CHALLENGING MODE</div><div class="ch-sub" id="chSubtitle"></div></div><button class="ch-btn" id="chHome">← Home</button></div><div id="chLanding"><div class="ch-panel"><div style="font-size:35px">⚡ 🎯 🏆</div><h2 style="margin:8px 0">Speed. Precision. Streaks.</h2><p class="ch-sub" id="chInstructions"></p><div class="ch-stats"><div class="ch-stat"><strong id="chCompleted"></strong><small>LEVELS</small></div><div class="ch-stat"><strong id="chTotalBest">0</strong><small>BEST SCORE</small></div><div class="ch-stat"><strong id="chUnlocked">1</strong><small>NEXT LEVEL</small></div><div class="ch-stat"><strong id="chTrophies"></strong><small>ARENA TROPHIES</small></div></div><p class="ch-sub" id="chMedals"></p><button class="ch-btn main" id="chContinue">▶ Continue</button></div><h3>Choose an arena</h3><div class="ch-grid" id="chWorlds"></div></div><div id="chLevels" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chBackWorlds">← Arenas</button><strong id="chWorldName"></strong></div><div class="ch-levels" id="chLevelGrid"></div><p class="ch-sub">Finish a level to unlock the next. You can replay completed levels to improve your score.</p></div><div id="chPlay" class="ch-hide"><div class="ch-header"><button class="ch-btn" id="chExit">✕ Exit</button><div class="ch-legend"><span class="ch-dot" id="chTargetDot"></span><span id="chTargetText">TARGET</span></div><strong id="chLevelName">LEVEL 1</strong></div><div class="ch-stats"><div class="ch-stat"><strong id="chTime">45</strong><small>SECONDS</small></div><div class="ch-stat"><strong id="chHits">0/10</strong><small>HITS</small></div><div class="ch-stat"><strong id="chScore">0</strong><small>SCORE</small></div><div class="ch-stat"><strong id="chCombo">x1</strong><small>COMBO</small></div></div><div class="ch-meter"><div id="chTimeBar"></div></div><div id="chArena" aria-label="Challenging balloon arena"></div><div class="ch-feedback" id="chFeedback">Pop the target color. Wrong pops cost time and points.</div></div><div id="chResult" class="ch-hide"><div class="ch-panel ch-result"><div id="chCelebration" aria-hidden="true"></div><div class="ch-label" id="chResultTag">LEVEL COMPLETE</div><h2 id="chResultTitle">LEVEL CLEARED</h2><div class="big" id="chFinalScore">0</div><p class="ch-sub" id="chResultInfo"></p><p id="chPrize"></p><div class="btnrow"><button class="ch-btn main" id="chNext">Next level →</button><button class="ch-btn" id="chRetry">↻ Retry</button><button class="ch-btn" id="chResultsMap">Arenas</button></div></div></div>`;
 $('app').insertBefore(root,$('toast'));
 let world=0,level=1,run=null,raf=0,spawner=0,lastFrame=0,items=[];
 function screen(name){['chLanding','chLevels','chPlay','chResult'].forEach(x=>$(x).classList.toggle('ch-hide',x!==({landing:'chLanding',levels:'chLevels',play:'chPlay',result:'chResult'}[name])));window.scrollTo(0,0)}
@@ -758,9 +777,9 @@ $('chNext').onclick=()=>{if(level<limit())startLevel(level+1)};
 </style>
 <div id="ppPrivacyOverlay" role="dialog" aria-modal="true" aria-label="Privacy policy" hidden>
 <div id="ppPrivacyPanel"><button id="ppPrivacyClose" type="button">Close ✕</button>
-<h2>Pop Parade privacy policy</h2>
-<p><strong>For families and players:</strong> Pop Parade is an offline game for kids, teens and adults. No account is required.</p>
-<p><strong>Data on your device:</strong> Your level progress, completed learning sets, scores, stickers and sound settings stay in local storage on this device. They are not sent to the Pop Parade developer or a game server. You can delete them using the game's reset option or by clearing the app's data/uninstalling it.</p>
+<h2>pop balloons: Learn &amp; fun privacy policy</h2>
+<p><strong>For families and players:</strong> pop balloons: Learn &amp; fun is an offline game for kids, teens and adults. No account is required.</p>
+<p><strong>Data on your device:</strong> Your level progress, completed learning sets, scores, stickers and sound settings stay in local storage on this device. They are not sent to the pop balloons: Learn &amp; fun developer or a game server. You can delete them using the game's reset option or by clearing the app's data/uninstalling it.</p>
 <p><strong>No advertising or tracking:</strong> This app has no ads, in-app purchases, analytics or tracking SDKs, and requests no Internet, location, contacts or microphone permission. It does not ask children for names, ages or email addresses.</p>
 <p><strong>Spoken instructions:</strong> If enabled, spoken hints use your device's configured text-to-speech engine. The engine's provider may have its own privacy practices. You can turn off spoken instructions in the grown-up settings.</p>
 <p><strong>Privacy questions:</strong> Contact the developer through the project's GitHub Issues page; please do not post sensitive personal details publicly. Privacy information is also available on the project's public website.</p>

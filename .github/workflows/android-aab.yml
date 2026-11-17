@@ -1,7 +1,7 @@
-name: Android V0.5 builds
+name: Android V0.6 builds
 on:
   push:
-    branches: [v0.5]
+    branches: [v0.6]
     paths:
       - 'index.html'
       - 'android/**'
@@ -11,7 +11,7 @@ permissions:
   contents: write
 jobs:
   build:
-    if: github.ref_name == 'v0.5'
+    if: github.ref_name == 'v0.6'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -43,25 +43,25 @@ jobs:
           test -s android/app/build/outputs/mapping/release/mapping.txt
           "$tools/apksigner" verify "$apk"
           "$tools/aapt" dump badging "$apk" > apk-badging.txt
-          grep -F "name='com.popparade.app' versionCode='6' versionName='0.5'" apk-badging.txt
+          grep -F "name='com.popparade.app' versionCode='7' versionName='0.6'" apk-badging.txt
           mkdir -p aab apk
-          cp "$aab" aab/PopParade-v0.5-code6-unsigned.aab
-          cp "$apk" apk/PopParade-v0.5-code6-debug.apk
-          sha256sum aab/PopParade-v0.5-code6-unsigned.aab apk/PopParade-v0.5-code6-debug.apk
+          cp "$aab" aab/PopParade-v0.6-unsigned.aab
+          cp "$apk" apk/PopParade-v0.6-debug.apk
+          sha256sum aab/PopParade-v0.6-unsigned.aab apk/PopParade-v0.6-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: PopParade-v0.5-code6-android
+          name: PopParade-v0.6-android
           if-no-files-found: error
           path: |
-            aab/PopParade-v0.5-code6-unsigned.aab
-            apk/PopParade-v0.5-code6-debug.apk
+            aab/PopParade-v0.6-unsigned.aab
+            apk/PopParade-v0.6-debug.apk
             android/app/build/outputs/mapping/release/mapping.txt
-      - name: Save verified binaries to the V0.5 branch
+      - name: Save verified binaries to the V0.6 branch
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f aab/PopParade-v0.5-code6-unsigned.aab apk/PopParade-v0.5-code6-debug.apk
+          git add -f aab/PopParade-v0.6-unsigned.aab apk/PopParade-v0.6-debug.apk
           if ! git diff --cached --quiet; then
-            git commit -m 'build: save verified Pop Parade V0.5 Android binaries'
-            git push origin HEAD:v0.5
+            git commit -m 'build: save verified Pop Parade V0.6 Android binaries'
+            git push origin HEAD:v0.6
           fi
