@@ -170,8 +170,9 @@ public final class MainActivity extends Activity {
                 + "document.getElementById(x).click();return true;}"
                 + "let page=document.querySelector('#app>.screen.active');"
                 + "if(!page||page.id==='home')return false;"
-                + "let buttons={map:'mapHome',levels:'backMap',choose:'chooseBack',"
+                + "let buttons={kids:'kidsHome',map:'mapHome',levels:'backMap',choose:'chooseBack',"
                 + "game:'quitGame',result:'resultMap',collection:'collectionBack',playground:'playgroundBack',settings:'settingsBack'};"
+                + "Object.assign(buttons,{practiceMenu:'practiceMenuBack',practiceGame:'practiceExit',practiceDone:'practiceDoneBack'});"
                 + "let button=document.getElementById(buttons[page.id]);"
                 + "if(button){button.click();return true;}return false;})()";
         webView.evaluateJavascript(backScript, answer -> {

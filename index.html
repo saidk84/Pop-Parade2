@@ -45,20 +45,66 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
  #app{padding-top:calc(16px + env(safe-area-inset-top, 0px))}
  #playfield{height:clamp(170px,calc(100dvh - 215px - env(safe-area-inset-bottom, 0px)),460px);min-height:0}
 }
+
+.practice-pack{text-align:left;border-radius:18px}
+.practice-pack small{display:block;color:var(--ink);font-weight:650;margin-top:4px}
+.practice-prompt{text-align:center;padding:12px}
+.practice-prompt h2{margin:0 0 5px;font-size:clamp(19px,5vw,25px)}
+#practiceTarget{display:flex;justify-content:center;align-items:center;gap:8px;font-size:20px;font-weight:900;margin-bottom:9px}
+#practiceBalloons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(6px,2vw,15px);justify-items:center;padding:20px 6px 33px;margin-top:12px;border-radius:24px;background:linear-gradient(#d2f3ff,#e9fbec)}
+.practice-balloon{position:relative;width:100%;max-width:150px;min-height:clamp(96px,28vw,146px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:8px 6px;border-radius:49%;border:2px solid #fff;background:var(--practice-balloon);box-shadow:inset -7px -7px #00000012,inset 5px 5px #ffffff80;font-size:clamp(12px,3.5vw,18px);font-weight:900}
+.practice-balloon:before{content:"";position:absolute;left:calc(50% - 1px);top:100%;height:25px;width:2px;background:#607ba5;pointer-events:none}
+.practice-balloon:after{content:"";position:absolute;top:100%;left:calc(50% - 5px);border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--practice-balloon);pointer-events:none}
+.practice-word{max-width:100%;overflow-wrap:anywhere}
+.practice-picture{font-size:clamp(22px,7vw,35px);line-height:1.1}
+.practice-pop{animation:burst .22s forwards}
+#practiceFeedback{min-height:1.5em;text-align:center;font-weight:800;margin:8px 0}
+#practiceNext[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){.practice-pop{animation:none;opacity:.35}}
 </style>
 </head>
 <body>
 <div id="app">
  <div class="top"><div class="brand"><div class="logo">🎈</div>Pop Parade</div><div style="display:flex;gap:8px"><button class="iconbtn" id="soundBtn" aria-label="Toggle sound">🔊</button><button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙️</button></div></div>
  <div id="home" class="screen active">
-  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>A happy little balloon adventure. Find your color, pop the matching balloons, and collect stars!</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Play Parade</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>7+</small></button><button class="btn challenge-entry senior-entry" id="seniorBtn">👾 Seniors Mode <small>13+</small></button></div></div>
+  <div class="hero"><div class="mascot">🐻🎈</div><h1>Ready, Set,<br>Pop!</h1><p>Pop balloons to practice colors, letters, fruits and animals.</p><div class="btnrow"><button class="btn primary" id="playBtn">▶ Kids Mode</button><button class="btn secondary" id="freeBtn">✨ Free Pop</button><button class="btn challenge-entry" id="challengeBtn">⚡ Challenging Mode <small>7+</small></button><button class="btn challenge-entry senior-entry" id="seniorBtn">👾 Seniors Mode <small>13+</small></button></div></div>
   <div class="challenge-teaser">⚡ Play 300 levels in Challenging Mode or race faster creatures in Seniors Mode.</div>
   <div class="feature-row"><div class="feature"><span>🦋</span>Learn colors</div><div class="feature"><span>⭐</span>Earn stars</div><div class="feature"><span>🎁</span>Collect stickers</div></div>
   <div class="section-title"><h2>Your parade</h2><button class="pill" id="collectionBtn">🏅 Collection</button></div>
   <div class="panel" style="display:flex;align-items:center;gap:12px"><div style="font-size:36px">🏆</div><div style="flex:1"><b id="homeProgress">0 / 45 levels</b><div class="progress" style="margin:7px 0 0"><div id="homeBar" class="bar"></div></div></div><b id="homeStars">⭐ 0</b></div>
  </div>
+
+ <div id="kids" class="screen">
+  <div class="section-title"><button class="pill" id="kidsHome">← Home</button><h2>Kids Mode</h2></div>
+  <div class="world-list">
+   <button class="world" id="kidsColors"><span class="world-art">🎈</span><span class="world-info"><b>Colors</b><small>45 levels in five worlds</small></span></button>
+   <button class="world" id="kids-alphabet"><span class="world-art">🔤</span><span class="world-info"><b>Alphabet</b><small>Practice A to Z</small></span></button>
+   <button class="world" id="kids-fruits"><span class="world-art">🍎</span><span class="world-info"><b>Fruits</b><small>Learn fruit names</small></span></button>
+   <button class="world" id="kids-animals"><span class="world-art">🐘</span><span class="world-info"><b>Animals</b><small>Learn animal names</small></span></button>
+  </div>
+ </div>
+ <div id="practiceMenu" class="screen">
+  <div class="section-title"><button class="pill" id="practiceMenuBack">← Kids</button><h2 id="practiceTopic"></h2></div>
+  <p id="practiceSummary"></p>
+  <div id="practicePacks" class="world-list"></div>
+ </div>
+ <div id="practiceGame" class="screen">
+  <div class="section-title"><button class="pill" id="practiceExit">← Sets</button><span class="pill" id="practiceTurn"></span></div>
+  <div class="panel practice-prompt">
+   <h2 id="practiceInstruction"></h2><div id="practiceTarget" aria-hidden="true"></div>
+   <button class="pill" id="practiceListen">🔊 Hear it again</button>
+  </div>
+  <div id="practiceBalloons" aria-label="Choose a balloon"></div>
+  <p id="practiceFeedback" role="status"></p>
+ </div>
+ <div id="practiceDone" class="screen">
+  <div class="hero celebrate">
+   <div class="reward" aria-hidden="true">⭐</div><h2>Set complete!</h2><p id="practiceDoneText"></p>
+   <div class="btnrow"><button class="btn primary" id="practiceNext">Next set</button><button class="btn secondary" id="practiceReplay">Play again</button><button class="btn pink" id="practiceDoneBack">All sets</button></div>
+  </div>
+ </div>
  <div id="map" class="screen">
-  <div class="section-title"><h2>Choose your world 🌍</h2><button class="pill" id="mapHome">⌂ Home</button></div>
+  <div class="section-title"><h2>Choose your world 🌍</h2><button class="pill" id="mapHome">← Kids</button></div>
   <div class="world-list" id="worldList"></div>
  </div>
  <div id="levels" class="screen">
@@ -95,7 +141,7 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
  <div id="settings" class="screen">
   <div class="section-title"><button class="pill" id="settingsBack">← Home</button><h2>Grown-up corner</h2></div>
   <div class="panel"><p style="margin-top:0;color:var(--muted)">Simple settings for the grown-up helping with play.</p>
-   <div class="settings-row">Spoken color instructions <button class="toggle on" id="voiceToggle"><span></span></button></div>
+   <div class="settings-row">Spoken instructions <button class="toggle on" id="voiceToggle"><span></span></button></div>
    <div class="settings-row">Sound effects <button class="toggle on" id="soundToggle"><span></span></button></div>
    <div class="settings-row">Gentle hints <button class="toggle on" id="hintToggle"><span></span></button></div>
    <p style="font-size:12px;color:var(--muted)">Progress is saved on this device. No account is needed.</p>
@@ -103,7 +149,7 @@ footer{text-align:center;color:#929bb0;font-size:11px;margin:18px 0 0}
   </div>
  </div>
  <div class="toast" id="toast"></div>
- <footer>Pop Parade V0.4 · A cheerful color-popping adventure · Progress stays on this device</footer>
+ <footer>Pop Parade V0.5 · A cheerful color-popping adventure · Progress stays on this device</footer>
 </div>
 <script>
 (()=>{
@@ -124,7 +170,7 @@ const worlds=[
  {name:'Star Carnival',range:[37,45],emoji:'🎡',desc:'Finish the parade with a big sparkle!',bg:'#e9e4ff',sticker:'🦁'}
 ];
 const stickers=['🐝','🦋','🦄','🐸','🦁'];
-const defaults={done:{},best:{},stickers:[],garden:{},sound:true,voice:true,hints:true};
+const defaults={done:{},best:{},stickers:[],garden:{},learning:{},sound:true,voice:true,hints:true};
 let save;try{save={...defaults,...JSON.parse(localStorage.getItem('popParadeSave')||'{}')};}catch(e){save={...defaults};}
 let level=1,mode='levels',targetColor=colors[0],popped=0,misses=0,needed=5,spawnTimer=null,live=false,spawned=0,activeBalloons=[],audioCtx=null;
 const persist=()=>{try{localStorage.setItem('popParadeSave',JSON.stringify(save));}catch(e){};updateHome();};
@@ -223,8 +269,154 @@ const melodies={
 document.addEventListener('parade-sound',event=>{
  for(const note of melodies[event.detail])beep(...note);
 });
+
+const learningTopics={
+ alphabet:{name:'Alphabet',icon:'🔤',packSize:7,items:Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ',letter=>[letter])},
+ fruits:{name:'Fruits',icon:'🍎',packSize:13,items:[
+  ['Apple','🍎'],['Banana','🍌'],['Orange','🍊'],['Pear','🍐'],['Strawberry','🍓'],['Grapes','🍇'],
+  ['Watermelon','🍉'],['Peach','🍑'],['Cherries','🍒'],['Pineapple','🍍'],['Mango','🥭'],['Kiwi','🥝'],['Lemon','🍋'],
+  ['Lime','🍋‍🟩'],['Blueberry','🫐'],['Melon','🍈'],['Coconut','🥥'],['Avocado','🥑'],['Plum'],['Apricot'],
+  ['Raspberry'],['Blackberry'],['Pomegranate'],['Papaya'],['Guava'],['Fig'],
+  ['Date'],['Dragon fruit'],['Passion fruit'],['Lychee'],['Tangerine'],['Grapefruit'],['Persimmon'],
+  ['Star fruit'],['Jackfruit'],['Durian'],['Mangosteen'],['Rambutan'],['Mulberry'],
+  ['Gooseberry'],['Cranberry'],['Nectarine'],['Quince'],['Kumquat'],['Longan'],['Soursop'],['Breadfruit'],
+  ['Sapodilla'],['Tamarind'],['Prickly pear'],['Loquat'],['Cherimoya']
+ ]},
+ animals:{name:'Animals',icon:'🐘',packSize:13,items:[
+  ['Dog','🐶'],['Cat','🐱'],['Rabbit','🐰'],['Horse','🐴'],['Cow','🐄'],['Pig','🐷'],['Sheep','🐑'],
+  ['Goat','🐐'],['Chicken','🐔'],['Duck','🦆'],['Turkey','🦃'],['Donkey','🫏'],['Mouse','🐭'],
+  ['Lion','🦁'],['Tiger','🐯'],['Elephant','🐘'],['Giraffe','🦒'],['Zebra','🦓'],['Gorilla','🦍'],
+  ['Monkey','🐒'],['Panda','🐼'],['Koala','🐨'],['Kangaroo','🦘'],['Rhinoceros','🦏'],['Hippopotamus','🦛'],['Camel','🐪'],
+  ['Bear','🐻'],['Fox','🦊'],['Wolf','🐺'],['Deer','🦌'],['Moose','🫎'],['Squirrel','🐿️'],['Hedgehog','🦔'],
+  ['Raccoon','🦝'],['Skunk','🦨'],['Otter','🦦'],['Bat','🦇'],['Owl','🦉'],['Eagle','🦅'],
+  ['Penguin','🐧'],['Flamingo','🦩'],['Parrot','🦜'],['Peacock','🦚'],['Seal','🦭'],['Dolphin','🐬'],
+  ['Whale','🐋'],['Shark','🦈'],['Octopus','🐙'],['Crab','🦀'],['Frog','🐸'],['Turtle','🐢'],['Crocodile','🐊']
+ ]}
+};
+const practiceRounds=3;
+let topicKey='alphabet',practice=null,practiceTimer;
+function shuffle(items){
+ const copy=[...items];
+ for(let i=copy.length-1;i>0;i--){
+  const other=Math.floor(Math.random()*(i+1));
+  [copy[i],copy[other]]=[copy[other],copy[i]];
+ }
+ return copy;
+}
+function practiceLabel(item){
+ return topicKey==='alphabet'?item[0]+' '+item[0].toLowerCase():item[0];
+}
+function practicePrompt(item){return 'Pop '+(topicKey==='alphabet'?'the letter ':'')+item[0]}
+function paintPracticeItem(element,item){
+ const label=document.createElement('span');
+ label.className='practice-word';
+ label.textContent=practiceLabel(item);
+ element.replaceChildren(label);
+ if(item[1]){
+  const icon=document.createElement('span');
+  icon.className='practice-picture';icon.setAttribute('aria-hidden','true');icon.textContent=item[1];
+  element.prepend(icon);
+ }
+}
+function openPracticePacks(key){
+ stopPractice();
+ topicKey=key;
+ const topic=learningTopics[key], grid=$('practicePacks');
+ $('practiceTopic').textContent=topic.icon+' '+topic.name;
+ $('practiceSummary').textContent=topic.items.length+' '+topic.name.toLowerCase().replace('alphabet','letters')+' · 3 turns per item';
+ grid.replaceChildren();
+ for(let offset=0;offset<topic.items.length;offset+=topic.packSize){
+  const pack=offset/topic.packSize, items=topic.items.slice(offset,offset+topic.packSize);
+  const button=document.createElement('button'), detail=document.createElement('small');
+  button.className='pill practice-pack';
+  button.textContent=key==='alphabet'?items[0][0]+'–'+items.at(-1)[0]:topic.name+' '+(pack+1);
+  detail.textContent=save.learning[key]?.[pack]?'✓ Completed':items.length+' to learn';
+  button.append(detail);button.onclick=()=>startPractice(pack);grid.append(button);
+ }
+ show('practiceMenu');
+}
+function stopPractice(){
+ clearTimeout(practiceTimer);
+ practice=null;
+}
+function startPractice(pack){
+ stopPractice();
+ const topic=learningTopics[topicKey], offset=pack*topic.packSize;
+ const items=topic.items.slice(offset,offset+topic.packSize);
+ const turns=[];
+ for(let round=0;round<practiceRounds;round++){
+  const order=shuffle(items);
+  if(turns.at(-1)===order[0])order.push(order.shift());
+  turns.push(...order);
+ }
+ practice={pack,items,turns,index:0};
+ show('practiceGame');
+ renderPracticeTurn();
+}
+function renderPracticeTurn(restoreFocus=false){
+ const session=practice, target=session.turns[session.index];
+ const tray=$('practiceBalloons'), accent=['#c9e9ff','#dff1c6','#ffe0a5','#eedfff'][session.index%4];
+ const prompt=practicePrompt(target);
+ $('practiceInstruction').textContent=prompt;
+ paintPracticeItem($('practiceTarget'),target);
+ $('practiceTurn').textContent=(session.index+1)+' / '+session.turns.length;
+ $('practiceFeedback').textContent='';
+ tray.replaceChildren();
+ tray.style.setProperty('--practice-balloon',accent);
+ const distractors=shuffle(session.items.filter(item=>item!==target)).slice(0,2);
+ for(const item of shuffle([target,...distractors])){
+  const balloon=document.createElement('button');
+  balloon.type='button';balloon.className='practice-balloon';
+  balloon.setAttribute('aria-label',practiceLabel(item)+' balloon');
+  paintPracticeItem(balloon,item);
+  balloon.onclick=()=>answerPractice(balloon,item,target);
+  tray.append(balloon);
+ }
+ if(restoreFocus)tray.firstElementChild.focus({preventScroll:true});
+ speak(prompt);
+}
+function answerPractice(balloon,item,target){
+ if(!practice||balloon.disabled)return;
+ if(item!==target){
+  beep(290,.12);
+  $('practiceFeedback').textContent='Try again. '+practicePrompt(target)+'.';
+  speak(practicePrompt(target));
+  return;
+ }
+ const session=practice, restoreFocus=document.activeElement===balloon;
+ beep(770,.12);
+ $('practiceFeedback').textContent='Well done!';
+ balloon.classList.add('practice-pop');
+ for(const choice of $('practiceBalloons').children)choice.disabled=true;
+ practiceTimer=setTimeout(()=>{
+  if(practice!==session)return;
+  session.index++;
+  if(session.index<session.turns.length){
+   renderPracticeTurn(restoreFocus);
+   return;
+  }
+  save.learning[topicKey]??={};
+  save.learning[topicKey][session.pack]=true;
+  persist();
+  const topic=learningTopics[topicKey], hasNext=(session.pack+1)*topic.packSize<topic.items.length;
+  $('practiceDoneText').textContent='You found all '+session.items.length+' '+topic.name.toLowerCase().replace('alphabet','letters')+' three times!';
+  $('practiceNext').hidden=!hasNext;
+  $('practiceNext').onclick=()=>startPractice(session.pack+1);
+  $('practiceReplay').onclick=()=>startPractice(session.pack);
+  show('practiceDone');
+  beep(880,.2);
+  speak('Well done! You finished the set.');
+ },400);
+}
+$('kidsHome').onclick=()=>show('home');
+$('kidsColors').onclick=()=>{buildWorlds();show('map')};
+for(const key of Object.keys(learningTopics))$('kids-'+key).onclick=()=>openPracticePacks(key);
+$('practiceMenuBack').onclick=()=>show('kids');
+$('practiceExit').onclick=$('practiceDoneBack').onclick=()=>openPracticePacks(topicKey);
+$('practiceListen').onclick=()=>{if(practice&&!$('practiceBalloons').firstElementChild.disabled)speak(practicePrompt(practice.turns[practice.index]))};
+
 function toggle(el,key){save[key]=!save[key];el.classList.toggle('on',save[key]);persist();}
-$('playBtn').onclick=()=>{buildWorlds();show('map');};$('freeBtn').onclick=()=>startGame(colors[Math.floor(Math.random()*colors.length)],'free');$('mapHome').onclick=()=>show('home');$('backMap').onclick=()=>{buildWorlds();show('map');};$('chooseBack').onclick=()=>openWorld(worldIndex(level));$('quitGame').onclick=quit;$('resultMap').onclick=()=>{buildWorlds();show('map');};$('collectionBtn').onclick=()=>{renderStickers();show('collection');};$('collectionBack').onclick=()=>show('home');$('settingsBtn').onclick=()=>{if(live)quit();show('settings')};$('settingsBack').onclick=()=>show('home');$('soundBtn').onclick=()=>toggle($('soundToggle'),'sound');$('soundToggle').onclick=()=>toggle($('soundToggle'),'sound');$('voiceToggle').onclick=()=>toggle($('voiceToggle'),'voice');$('hintToggle').onclick=()=>toggle($('hintToggle'),'hints');$('resetBtn').onclick=()=>{if(confirm('Grown-up: reset all stars, stickers and level progress on this device?')){save={...defaults,done:{},best:{},stickers:[],garden:{}};document.dispatchEvent(new Event('parade-reset'));persist();buildWorlds();show('home');toast('Progress reset. A fresh parade awaits!');}};
+$('playBtn').onclick=()=>show('kids');$('freeBtn').onclick=()=>startGame(colors[Math.floor(Math.random()*colors.length)],'free');$('mapHome').onclick=()=>show('kids');$('backMap').onclick=()=>{buildWorlds();show('map');};$('chooseBack').onclick=()=>openWorld(worldIndex(level));$('quitGame').onclick=quit;$('resultMap').onclick=()=>{buildWorlds();show('map');};$('collectionBtn').onclick=()=>{renderStickers();show('collection');};$('collectionBack').onclick=()=>show('home');$('settingsBtn').onclick=()=>{if(live)quit();stopPractice();show('settings')};$('settingsBack').onclick=()=>show('home');$('soundBtn').onclick=()=>toggle($('soundToggle'),'sound');$('soundToggle').onclick=()=>toggle($('soundToggle'),'sound');$('voiceToggle').onclick=()=>toggle($('voiceToggle'),'voice');$('hintToggle').onclick=()=>toggle($('hintToggle'),'hints');$('resetBtn').onclick=()=>{if(confirm('Grown-up: reset all stars, stickers and level progress on this device?')){save={...defaults,done:{},best:{},stickers:[],garden:{},learning:{}};stopPractice();document.dispatchEvent(new Event('parade-reset'));persist();buildWorlds();show('home');toast('Progress reset. A fresh parade awaits!');}};
 $('voiceToggle').classList.toggle('on',save.voice);$('soundToggle').classList.toggle('on',save.sound);$('hintToggle').classList.toggle('on',save.hints);
 updateHome();
 })();
@@ -273,7 +465,7 @@ const challengeWorlds=[
  ['Master Mode','🏆','The original finale'],['Skyway','☁️'],['Sunset Sprint','🌅'],['Crystal Cavern','💎'],['Thunder Run','🌩️'],
  ['Comet Trail','☄️'],['Wild Current','🌊'],['Ice Drift','❄️'],['Blazing Loop','🔥'],['Moonbase','🌙'],['Vortex','🌀'],
  ['Flashpoint','💥'],['Deep Space','🪐'],['Mirage','🏜️'],['Storm Gate','🌪️'],['Photon Field','💡'],['Nova Route','🌠'],
- ['Gravity Well','🛰️'],['Final Orbit','🌌'],['Rainbow Rush','🌈'],['Parade Legends','🏆']
+ ['Gravity Well','🛰️'],['Final Orbit','🌌'],['Starlight Sprint','🌟'],['Parade Legends','🏆']
 ];
 const seniorWorlds=[
  ['Monster Alley','👹'],['Alien Signal','👽'],['Haunted Hall','👻'],['Zombie Crossing','🧟'],
@@ -568,7 +760,7 @@ $('chNext').onclick=()=>{if(level<limit())startLevel(level+1)};
 <div id="ppPrivacyPanel"><button id="ppPrivacyClose" type="button">Close ✕</button>
 <h2>Pop Parade privacy policy</h2>
 <p><strong>For families and players:</strong> Pop Parade is an offline game for kids, teens and adults. No account is required.</p>
-<p><strong>Data on your device:</strong> Your level progress, scores, stickers and sound settings stay in local storage on this device. They are not sent to the Pop Parade developer or a game server. You can delete them using the game's reset option or by clearing the app's data/uninstalling it.</p>
+<p><strong>Data on your device:</strong> Your level progress, completed learning sets, scores, stickers and sound settings stay in local storage on this device. They are not sent to the Pop Parade developer or a game server. You can delete them using the game's reset option or by clearing the app's data/uninstalling it.</p>
 <p><strong>No advertising or tracking:</strong> This app has no ads, in-app purchases, analytics or tracking SDKs, and requests no Internet, location, contacts or microphone permission. It does not ask children for names, ages or email addresses.</p>
 <p><strong>Spoken instructions:</strong> If enabled, spoken hints use your device's configured text-to-speech engine. The engine's provider may have its own privacy practices. You can turn off spoken instructions in the grown-up settings.</p>
 <p><strong>Privacy questions:</strong> Contact the developer through the project's GitHub Issues page; please do not post sensitive personal details publicly. Privacy information is also available on the project's public website.</p>
