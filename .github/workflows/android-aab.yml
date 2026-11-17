@@ -65,3 +65,5 @@ jobs:
             git commit -m 'build: save verified Pop Parade V0.6 Android binaries'
             git push origin HEAD:v0.6
           fi
+
+# Build version code 8 from the current V0.6 branch.
